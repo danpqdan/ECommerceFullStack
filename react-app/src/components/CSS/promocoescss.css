@@ -1,0 +1,31 @@
+.list-btn {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    justify-content: center;
+}
+
+.btn-home {
+    display: flex;
+    flex-direction: row;
+    padding: 0 20px;
+    align-items: center;
+    background-color: rgba(155, 157, 158, 0.664);
+    border: 0.2px solid rgba(155, 157, 158, 0.664);
+    ;
+    border-radius: 10px;
+
+}
+
+#icon,
+h2 {
+    text-align: center;
+    font-weight: lighter;
+    margin: 10px 5px;
+    font-size: 20px;
+}
+
+#admin {
+    position: absolute;
+    right: 0;
+}

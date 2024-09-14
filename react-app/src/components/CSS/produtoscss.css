@@ -1,0 +1,11 @@
+#card-produto {
+    background-color: aqua;
+    border-radius: 10px;
+    border: 0.2px solid grey;
+}
+
+#card-produto>li,
+h2,
+p {
+    color: black;
+}

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste Mercado Pago Sandbox</title>
+</head>
+
+<body>
+
+
+    <html>
+
+    <head>
+        <script src="https://sdk.mercadopago.com/js/v2">
+        </script>
+    </head>
+
+    <body>
+        <div id="wallet_container">
+        </div>
+        <script>
+            const mp = new MercadoPago('TEST-98cbc922-d6c9-407a-8ecd-cc61f026c135', {
+                locale: 'pt-BR'
+            });
+
+            mp.bricks().create("wallet", "wallet_container", {
+                initialization: {
+                    preferenceId: "<209512302-11c4d120-14fe-48da-998c-7530ec76dfcb>",
+                },
+            });
+        </script>
+    </body>
+
+    </html>
