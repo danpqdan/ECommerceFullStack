@@ -45,3 +45,25 @@ Siga estas instruções para configurar e executar o projeto em sua máquina loc
 
    ```bash
    git clone https://github.com/danpqdan/ECommerceFullStack.git
+
+   ```
+
+2. Certifique-se de estar na pagina do projeto:
+
+   ```bash
+   cd/react-app
+   ```
+
+4. Instale as dependências:
+
+   ```bash
+   npm install
+
+   ```
+
+5. Iniciando Projeto:
+
+   ```bash
+   npm dev
+   ```
+
