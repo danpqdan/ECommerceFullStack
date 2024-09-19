@@ -9,9 +9,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.apiecommerce.apiecomerce.server.entities.DTO.AuthenticationDTO;
 import com.apiecommerce.apiecomerce.server.entities.DTO.ProdutoDTO;
-import com.apiecommerce.apiecomerce.server.entities.DTO.SacolaProdutoDTO;
+import com.apiecommerce.apiecomerce.server.entities.DTO.SacolaDTO;
 import com.apiecommerce.apiecomerce.server.services.ProdutoService;
 import com.apiecommerce.apiecomerce.server.services.SacolaService;
 
@@ -30,19 +29,18 @@ public class SacolaController {
     }
 
     @PostMapping
-    public ResponseEntity novaSacola(@RequestBody AuthenticationDTO authenticationDTO) {
-        return ResponseEntity.ok().body(sacolaService.novaSacola(authenticationDTO));
+    public ResponseEntity iniciarNovaSacola(@RequestBody SacolaDTO listaProduto) {
+        var result = sacolaService.novaSacola(listaProduto);
+        return ResponseEntity.ok().body(result);
     }
 
-    @PostMapping("/{sacola}") // Rota dinamica de acordo com a sacola do usuario *IMPLEMENTAR*
-    public ResponseEntity adicionarProduto(@RequestBody SacolaProdutoDTO sacolaProdutoDTO, @PathVariable Long sacola) {
-        if (sacola == sacolaProdutoDTO.getSacolaID()) {
-            produtoService.retornarUmProduto(sacolaProdutoDTO);
-            sacolaService.adicionarProdutos(sacolaProdutoDTO);
-            sacolaService.somaQuantidadeProduto(sacolaProdutoDTO.getQuantidade(), sacolaProdutoDTO.getProdutoID());
-            sacolaService.somaValorProdutos(sacolaProdutoDTO);
+    @PostMapping("/{sacola}")
+    public ResponseEntity adicionarProdutos(@RequestBody SacolaDTO sacolaProdutoDTO,
+            @PathVariable Long sacolaID) {
+        if (sacolaID == sacolaProdutoDTO.getSacolaID()) {
+            var sacola = sacolaService.adicionarProdutos(sacolaProdutoDTO);
             return ResponseEntity.ok()
-                    .body(produtoService.retornarUmProduto(sacolaProdutoDTO).getNome() + "Adicionado a Sacola");
+                    .body(sacola);
         }
         return ResponseEntity.badRequest().build();
     }

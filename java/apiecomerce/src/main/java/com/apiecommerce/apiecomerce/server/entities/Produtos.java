@@ -1,45 +1,49 @@
 package com.apiecommerce.apiecomerce.server.entities;
 
-import com.apiecommerce.apiecomerce.server.entities.DTO.ProdutoDTO;
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToOne;
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Getter
 @Setter
+@Getter
 @AllArgsConstructor
 @NoArgsConstructor
+@EqualsAndHashCode(of = "id")
 public class Produtos {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
     String nome;
-    Float preco;
-    int quantidade;
+    Double preco;
+    int quantidadeEmSacola;
+    int quantidadeEmEstoque;
     String descricao;
+    Double valorTotal;
     @OneToOne
     Imagens imagem;
 
-    public int somaQuantidade(int quantidade) {
-        return this.quantidade += quantidade;
+    public int setQuantidadeParaSacola(int quantidade) {
+        this.quantidadeEmSacola = this.quantidadeEmSacola * 0;
+        this.quantidadeEmSacola = +quantidade;
+        return quantidadeEmSacola;
     }
 
-    public double somaQuantidadeXPreco(int quantidade) {
-        this.quantidade = +quantidade;
-        return this.preco * quantidade;
+    public void setQuantidadeEmSacola(int quantidadeEmSacola) {
+        this.quantidadeEmSacola = this.quantidadeEmSacola * 0;
+        this.quantidadeEmSacola = quantidadeEmSacola;
     }
 
-    public Produtos(int quantidade) {
-        this.quantidade = quantidade + 1;
+    public void setValorTotal(Double preco, int quantidade) {
+        this.valorTotal = preco * quantidade;
     }
 
 }

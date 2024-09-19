@@ -1,5 +1,5 @@
 package com.apiecommerce.apiecomerce.server.entities.DTO;
 
-public record QuantidadeProdutoDTO(int quantidadeProdutos) {
-    
+public record QuantidadeProdutoDTO(Long id, int quantidadeProdutos) {
+
 }

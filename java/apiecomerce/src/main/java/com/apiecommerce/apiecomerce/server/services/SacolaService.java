@@ -1,18 +1,18 @@
 package com.apiecommerce.apiecomerce.server.services;
 
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import com.apiecommerce.apiecomerce.server.entities.EstadoDaCompra;
 import com.apiecommerce.apiecomerce.server.entities.Produtos;
 import com.apiecommerce.apiecomerce.server.entities.Sacola;
 import com.apiecommerce.apiecomerce.server.entities.Usuario;
-import com.apiecommerce.apiecomerce.server.entities.DTO.AuthenticationDTO;
 import com.apiecommerce.apiecomerce.server.entities.DTO.ProdutoDTO;
 import com.apiecommerce.apiecomerce.server.entities.DTO.SacolaDTO;
-import com.apiecommerce.apiecomerce.server.entities.DTO.SacolaProdutoDTO;
 import com.apiecommerce.apiecomerce.server.interfaces.ProdutoRepository;
 import com.apiecommerce.apiecomerce.server.interfaces.SacolaRepository;
 import com.apiecommerce.apiecomerce.server.interfaces.UsuarioRepository;
@@ -32,54 +32,64 @@ public class SacolaService {
     @Autowired
     CustomUserDetailsService customUserDetailsService;
 
-    public boolean verificaSacolaExistente(Long id) {
-        boolean teste = true;
-        if (sacolaRepository.findById(id).isPresent()) {
-            return teste = false;
+    // Necessario implementar logica para resgate de ID de pagamento
+    // Necessario Criar tabela adicional para guardar informacoes
+    public boolean verificaSituacaoSacola(Long id) {
+        var sacola = sacolaRepository.findById(id).get();
+        boolean situacao = true;
+        if (sacola.getEstadoDaCompra() == EstadoDaCompra.ENTREGUE) {
+            sacolaRepository.delete(sacola);
+            situacao = false;
         }
-        return teste;
-    }
-
-    public Double somaValorProdutos(SacolaProdutoDTO dto) {
-        Sacola sacola = listarSacola(dto.getSacolaID());
-        var total = sacola.getProdutos().stream().mapToDouble(Produtos::getPreco).sum();
-        var totalValor = total * dto.getQuantidade();
-        sacola.setValorFinal(totalValor);
-        sacolaRepository.saveAndFlush(sacola);
-        return sacola.getValorFinal();
-    }
-
-    public void somaQuantidadeProduto(int quantidade, Long id) {
-        var quantidadeAtual = +quantidade;
-        var produtoDB = produtoRepository.findById(id).get().getQuantidade();
-        var sunFinal = produtoDB + quantidadeAtual;
-        produtoRepository.findById(id).get().setQuantidade(sunFinal);
+        return situacao;
     }
 
     public void removeItem(ProdutoDTO produtoDTO) {
         produtoRepository.deleteById(produtoDTO.getId());
     }
 
-    public ResponseEntity novaSacola(AuthenticationDTO login) {
-        var user = usuarioRepository.encontrarByUsername(login.username());
-        if (customUserDetailsService.testeUsuario(login) != true) {
-            return ResponseEntity.notFound().build();
+    public Sacola novaSacola(SacolaDTO sacolaDTO) {
+        Usuario usuario = usuarioRepository.findById(sacolaDTO.getUsuarioID()).orElseThrow();
+        List<Produtos> produto = produtoRepository // Lista produtos apartir de DTO
+                .findAllById(sacolaDTO.getProdutos().stream().map(ProdutoDTO::getId).collect(Collectors.toList()));
+        var verificaSacola = sacolaRepository.findByUsuario(usuario).isPresent(); // Verifica se o Usuario tem sacola
+        if (verificaSacola == true) {
+            Sacola sacolaAnt = sacolaRepository.findByUsuario(usuario).get(); // instancia sacola apartir de usuario
+            if (verificaSituacaoSacola(sacolaAnt.getId())) {
+                sacolaAnt.setProdutos(produto);
+            }
+            var dto = sacolaDTO.getProdutos().stream()
+                    .sorted(Comparator.comparing(ProdutoDTO::getId))
+                    .collect(Collectors.toList());
+            for (var i = 0; i < produto.size(); i++) {
+                var quantidade = produto.get(i).getQuantidadeEmSacola();
+                var preco = produto.get(i).getPreco();
+                var quantidadeDto = dto.get(i).getQuantidadeDisponivel();
+                produto.get(i).setValorTotal(preco, quantidade);
+                produto.get(i).setQuantidadeEmSacola(quantidade + quantidadeDto);
+            }
+            var lProdutos = sacolaAnt.getProdutos();
+            sacolaAnt.setValorTotalSacola(lProdutos);
+            sacolaRepository.save(sacolaAnt);
+            return sacolaAnt;
         }
-        Sacola sacola = new Sacola(user);
+
+        Sacola sacola = new Sacola();
+        sacola.setUsuario(usuario);
+        sacola.setEstadoDaCompra(EstadoDaCompra.PENDENTE);
+        sacola.setProdutos(produto);
+        sacola.setValorTotalSacola(produto);
         sacolaRepository.save(sacola);
-        return ResponseEntity.accepted().body(sacola);
+        return sacola;
     }
 
-    public ResponseEntity adicionarProdutos(SacolaProdutoDTO dto) {
-        Produtos produto = produtoRepository.findById(dto.getProdutoID()).orElseThrow();
-        Usuario usuario = usuarioRepository.findById(dto.getUsuarioID()).orElseThrow();
-        Sacola sacola = sacolaRepository.findByUsuario(usuario);
-        try {
-            sacola.addProduto(produto);
-            return ResponseEntity.accepted().body(sacolaRepository.saveAndFlush(sacola));
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.fillInStackTrace());
-        }
+    public Sacola adicionarProdutos(SacolaDTO dto) {
+        var sacola = sacolaRepository.findById(dto.getSacolaID()).get();
+        var produtos = produtoRepository
+                .findAllById(dto.getProdutos().stream().map(ProdutoDTO::getId).collect(Collectors.toList()));
+        sacola.setValorTotalSacola(produtos);
+        sacolaRepository.save(sacola);
+        return sacola;
     }
 
     public List<Sacola> todasSacolas() {

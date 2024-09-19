@@ -9,7 +9,6 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(UsernameNotFoundException.class)
     public ResponseEntity<String> handleUsernameNotFoundException(UsernameNotFoundException ex) {
-        // Log ou outra lógica personalizada
         return new ResponseEntity<>("Erro: " + ex.getMessage(), HttpStatus.NOT_FOUND);
     }
 

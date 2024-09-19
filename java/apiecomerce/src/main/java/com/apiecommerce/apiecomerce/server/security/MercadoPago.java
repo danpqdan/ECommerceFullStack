@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.apiecommerce.apiecomerce.server.entities.Produtos;
+import com.apiecommerce.apiecomerce.server.entities.Sacola;
 import com.apiecommerce.apiecomerce.server.entities.DTO.SacolaDTO;
 import com.apiecommerce.apiecomerce.server.entities.DTO.SacolaProdutoDTO;
 import com.apiecommerce.apiecomerce.server.interfaces.SacolaRepository;
@@ -40,45 +41,32 @@ public class MercadoPago {
         @Autowired
         SacolaService sacolaService;
 
-        public List<Produtos> listProduto(SacolaProdutoDTO sacolaDTO) {
-                var sac = sacolaRepository.findById(sacolaDTO.getProdutoID()).get().getProdutos();
-                return sac.stream().toList();
-        }
-
-        public Double valorSacola(SacolaProdutoDTO sacolaProdutoDTO) {
-                return sacolaService.somaValorProdutos(sacolaProdutoDTO);
-        }
-
-        public ModelAndView pageIndexPg() {
-                ModelAndView mv = new ModelAndView();
-                mv.setViewName("checkout.html");
-                return mv;
+        public List<Produtos> listProduto(Long sacolaId) {
+                var sacola = sacolaRepository.findById(sacolaId).get();
+                return null;
         }
 
         public List<String> getPreferenceId(SacolaDTO sacola) {
                 try {
-                        var sac = sacolaRepository.findById(sacola.id()).get().getProdutos();
+                        var produto = listProduto(sacola.id());
                         MercadoPagoConfig.setAccessToken(token);
-                        
-                        
+
                         List<PreferenceItemRequest> items = new ArrayList<>();
-                        
-                        for (int i = 0; i < sac.size(); i++) {
-                                sac.get(i);
+
+                        for (int i = 0; i < produto.size(); i++) {
+                                produto.get(i);
                                 PreferenceItemRequest itemRequest = PreferenceItemRequest.builder()
-                                                .id(sac.get(i).getId().toString())
-                                                .title(sac.get(i).getNome())
+                                                .id(produto.get(i).getId().toString())
+                                                .title(produto.get(i).getNome())
                                                 .description("Teste")
                                                 .pictureUrl("http://picture.com/PS5")
                                                 .categoryId("games")
-                                                .quantity(sac.get(i).getQuantidade())
+                                                .quantity(produto.get(i).getQuantidade())
                                                 .currencyId("BRL")
-                                                .unitPrice(new BigDecimal(sac.get(i).getPreco()))
+                                                .unitPrice(new BigDecimal(produto.get(i).getPreco()))
                                                 .build();
 
-                                List<PreferenceItemRequest> items1 = new ArrayList<>();
-                                items1.add(itemRequest);
-                                items.addAll(items1);
+                                items.add(itemRequest);
                         }
                         PreferenceBackUrlsRequest backUrlsRequest = PreferenceBackUrlsRequest
                                         .builder()
@@ -104,10 +92,6 @@ public class MercadoPago {
                 } catch (MPException | MPApiException e) {
                         return new ArrayList<>(e.getMessage().indexOf(token));
                 }
-        }
-
-        public void infoCliente() {
-                
         }
 
 }
