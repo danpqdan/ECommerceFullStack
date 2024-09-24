@@ -17,7 +17,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode(of = "id")
-public class Produtos {
+public class Produto {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,7 +27,8 @@ public class Produtos {
     int quantidadeEmSacola;
     int quantidadeEmEstoque;
     String descricao;
-    Double valorTotal;
+    Double valorTotalEmEstoque;
+    Double valorTotalEmSacola;
     @OneToOne
     Imagens imagem;
 
@@ -42,8 +43,22 @@ public class Produtos {
         this.quantidadeEmSacola = quantidadeEmSacola;
     }
 
-    public void setValorTotal(Double preco, int quantidade) {
-        this.valorTotal = preco * quantidade;
+    public void setQuantidadeEmEstoqueAtualizada(int quantidadeEmEstoque) {
+        var emSacola = getQuantidadeEmSacola();
+        this.quantidadeEmEstoque = quantidadeEmEstoque - emSacola;
+    }
+
+    public void setValorTotalEmEstoque(int quantidade, Double preco) {
+        this.valorTotalEmEstoque = preco * quantidade;
+    }
+
+    public void setValorTotalEmSacola(int quantidade, Double preco) {
+        this.valorTotalEmSacola = preco * quantidade;
+    }
+
+    @Override
+    public String toString() {
+        return "Produtos [id=" + id + ", nome=" + nome + ", preco=" + preco + ", descricao=" + descricao + "]";
     }
 
 }

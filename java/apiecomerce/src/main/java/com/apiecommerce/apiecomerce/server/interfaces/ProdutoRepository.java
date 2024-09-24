@@ -1,20 +1,21 @@
 package com.apiecommerce.apiecomerce.server.interfaces;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import com.apiecommerce.apiecomerce.server.entities.Produtos;
+import com.apiecommerce.apiecomerce.server.entities.Produto;
 
 @Repository
-public interface ProdutoRepository extends JpaRepository<Produtos, Long> {
+public interface ProdutoRepository extends JpaRepository<Produto, Long> {
 
-    @Query("SELECT p FROM Produtos p WHERE p.quantidadeEmSacola = :quantidadeEmSacola")
-    List<Produtos> buscarProdutoPorQuantidade(@Param("quantidadeEmSacola") Integer quantidadeEmSacola);
+    @Query(value = "SELECT SUM(quantidadeEmSacola) FROM sacola WHERE produto_id = :produtoId", nativeQuery = true)
+    Integer somarQuantidadeProdutoEmTodasAsSacolasNative(@Param("produtoId") Long produtoId);
+
+    @Query("SELECT p FROM Produto p WHERE p.quantidadeEmSacola = :quantidadeEmSacola")
+    List<Produto> buscarProdutoPorQuantidade(@Param("quantidadeEmSacola") Long quantidadeEmSacola);
 
 }

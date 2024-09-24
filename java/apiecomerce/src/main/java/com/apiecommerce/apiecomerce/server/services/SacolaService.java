@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.apiecommerce.apiecomerce.server.entities.EstadoDaCompra;
-import com.apiecommerce.apiecomerce.server.entities.Produtos;
+import com.apiecommerce.apiecomerce.server.entities.Produto;
 import com.apiecommerce.apiecomerce.server.entities.Sacola;
 import com.apiecommerce.apiecomerce.server.entities.Usuario;
 import com.apiecommerce.apiecomerce.server.entities.DTO.ProdutoDTO;
@@ -50,13 +50,13 @@ public class SacolaService {
 
     public Sacola novaSacola(SacolaDTO sacolaDTO) {
         Usuario usuario = usuarioRepository.findById(sacolaDTO.getUsuarioID()).orElseThrow();
-        List<Produtos> produto = produtoRepository // Lista produtos apartir de DTO
+        List<Produto> produto = produtoRepository // Lista produtos apartir de DTO
                 .findAllById(sacolaDTO.getProdutos().stream().map(ProdutoDTO::getId).collect(Collectors.toList()));
         var verificaSacola = sacolaRepository.findByUsuario(usuario).isPresent(); // Verifica se o Usuario tem sacola
         if (verificaSacola == true) {
             Sacola sacolaAnt = sacolaRepository.findByUsuario(usuario).get(); // instancia sacola apartir de usuario
             if (verificaSituacaoSacola(sacolaAnt.getId())) {
-                sacolaAnt.setProdutos(produto);
+                sacolaAnt.setProduto(produto);
             }
             var dto = sacolaDTO.getProdutos().stream()
                     .sorted(Comparator.comparing(ProdutoDTO::getId))
@@ -64,11 +64,11 @@ public class SacolaService {
             for (var i = 0; i < produto.size(); i++) {
                 var quantidade = produto.get(i).getQuantidadeEmSacola();
                 var preco = produto.get(i).getPreco();
-                var quantidadeDto = dto.get(i).getQuantidadeDisponivel();
-                produto.get(i).setValorTotal(preco, quantidade);
+                var quantidadeDto = dto.get(i).getQuantidadeEmSacola();
+                produto.get(i).setValorTotalEmSacola(quantidade, preco);
                 produto.get(i).setQuantidadeEmSacola(quantidade + quantidadeDto);
             }
-            var lProdutos = sacolaAnt.getProdutos();
+            var lProdutos = sacolaAnt.getProduto();
             sacolaAnt.setValorTotalSacola(lProdutos);
             sacolaRepository.save(sacolaAnt);
             return sacolaAnt;
@@ -77,7 +77,7 @@ public class SacolaService {
         Sacola sacola = new Sacola();
         sacola.setUsuario(usuario);
         sacola.setEstadoDaCompra(EstadoDaCompra.PENDENTE);
-        sacola.setProdutos(produto);
+        sacola.setProduto(produto);
         sacola.setValorTotalSacola(produto);
         sacolaRepository.save(sacola);
         return sacola;
@@ -93,11 +93,23 @@ public class SacolaService {
     }
 
     public List<Sacola> todasSacolas() {
-        return sacolaRepository.findAll();
+        var sacola = sacolaRepository.findAll();
+        for (Sacola sacolaAtualizada : sacola) {
+            var produto = sacola.iterator().next().getProduto();
+            sacolaAtualizada.setValorTotalSacola(produto);
+        }
+        sacolaRepository.saveAll(sacola);
+        return sacola;
     }
 
     public Sacola listarSacola(Long id) {
         return sacolaRepository.findById(id).orElseThrow();
+    }
+
+    public void atualizarSacola(Long id) {
+        var sacola = sacolaRepository.findById(id).get();
+        sacola.setValorTotalSacola(sacola.getProduto());
+
     }
 
 }

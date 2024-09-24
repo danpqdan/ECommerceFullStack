@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.apiecommerce.apiecomerce.server.entities.Produtos;
+import com.apiecommerce.apiecomerce.server.entities.Produto;
 import com.apiecommerce.apiecomerce.server.entities.Sacola;
 import com.apiecommerce.apiecomerce.server.entities.DTO.SacolaDTO;
 import com.apiecommerce.apiecomerce.server.entities.DTO.SacolaProdutoDTO;
@@ -41,14 +41,14 @@ public class MercadoPago {
         @Autowired
         SacolaService sacolaService;
 
-        public List<Produtos> listProduto(Long sacolaId) {
+        public List<Produto> listProduto(Long sacolaId) {
                 var sacola = sacolaRepository.findById(sacolaId).get();
                 return null;
         }
 
         public List<String> getPreferenceId(SacolaDTO sacola) {
                 try {
-                        var produto = listProduto(sacola.id());
+                        var produto = listProduto(sacola.getSacolaID());
                         MercadoPagoConfig.setAccessToken(token);
 
                         List<PreferenceItemRequest> items = new ArrayList<>();

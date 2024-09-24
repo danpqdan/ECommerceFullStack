@@ -19,6 +19,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import lombok.AllArgsConstructor;
@@ -43,16 +44,16 @@ public class Sacola {
     @JoinColumn(name = "usuario_id")
     @JsonBackReference
     Usuario usuario;
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinTable(name = "sacola_produtos", joinColumns = @JoinColumn(name = "sacola_id"), inverseJoinColumns = @JoinColumn(name = "produto_id"))
-    List<Produtos> produtos = new ArrayList<>();
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "sacola_produto", joinColumns = @JoinColumn(name = "sacola_id"), inverseJoinColumns = @JoinColumn(name = "produto_id"))
+    List<Produto> produto = new ArrayList<>();
     Double valorFinal;
     @Enumerated(EnumType.STRING)
     EstadoDaCompra estadoDaCompra;
 
-    public double setValorTotalSacola(List<Produtos> produto) {
+    public double setValorTotalSacola(List<Produto> produto) {
         List<Double> novoValorFinal = new ArrayList<>();
-        for (Produtos p1 : produto) {
+        for (Produto p1 : produto) {
             var valor = p1.getPreco();
             var quantidade = p1.getQuantidadeEmSacola();
             p1.setQuantidadeParaSacola(quantidade);

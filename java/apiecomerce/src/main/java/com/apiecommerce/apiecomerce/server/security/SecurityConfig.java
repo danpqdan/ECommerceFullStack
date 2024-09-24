@@ -45,8 +45,8 @@ public class SecurityConfig {
 
                         .requestMatchers("/api/admin").hasRole("ADMIN")
 
-                        .requestMatchers(HttpMethod.GET, "/api/produtos").hasAnyRole("ADMIN", "USER")
-                        .requestMatchers(HttpMethod.POST, "/api/produtos").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/api/produto").hasAnyRole("ADMIN", "USER")
+                        .requestMatchers(HttpMethod.POST, "/api/produto").hasRole("ADMIN")
 
                         .requestMatchers(HttpMethod.GET, "/api/imagens/carouselhome").permitAll()
 
