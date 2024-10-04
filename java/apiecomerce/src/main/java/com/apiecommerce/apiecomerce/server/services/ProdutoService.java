@@ -1,20 +1,26 @@
 package com.apiecommerce.apiecomerce.server.services;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.apiecommerce.apiecomerce.client.entities.ClienteProduto;
+import com.apiecommerce.apiecomerce.client.entities.data.ClienteSacolaDTO;
+import com.apiecommerce.apiecomerce.client.entities.data.SacolaDTO;
 import com.apiecommerce.apiecomerce.server.entities.Imagens;
 import com.apiecommerce.apiecomerce.server.entities.Produto;
-import com.apiecommerce.apiecomerce.server.entities.Sacola;
-import com.apiecommerce.apiecomerce.server.entities.DTO.ProdutoDTO;
+import com.apiecommerce.apiecomerce.server.entities.ServerProduto;
+import com.apiecommerce.apiecomerce.server.entities.data.ProdutoDTO;
 import com.apiecommerce.apiecomerce.server.interfaces.ImagensRepository;
 import com.apiecommerce.apiecomerce.server.interfaces.ProdutoRepository;
 import com.apiecommerce.apiecomerce.server.interfaces.SacolaRepository;
+import com.apiecommerce.apiecomerce.server.interfaces.ServerProdutoRepository;
 
 @Service
 public class ProdutoService {
@@ -25,89 +31,59 @@ public class ProdutoService {
     ImagensRepository iRepository;
     @Autowired
     SacolaRepository sacolaRepository;
+    @Autowired
+    ServerProdutoRepository serverProdutoRepository;
 
-    public Produto retornarUmProduto(Long id) {
-        return produtoRepository.findById(id).orElseThrow();
+    public ServerProduto retornarUmProduto(Long id) {
+        return serverProdutoRepository.findById(id).orElseThrow();
     }
 
-    public List<Produto> retornarListaProdutos(List<Long> id) {
-        return produtoRepository.findAllById(id);
+    public List<ServerProduto> listarProduto() {
+        return serverProdutoRepository.findAll();
     }
 
-    public int interarQuantidadeSacola(Produto produto, int quantidade) {
-        if (produto == null) {
-            return 0;
-        }
-        int quant = produto.getQuantidadeEmSacola();
-        quant = quant + quantidade;
-        produto.setQuantidadeEmSacola(quant);
-        return quant;
-    }
-
+    @Transactional
     public void saveProdutoComImagem(ProdutoDTO produtoDTO, MultipartFile imagemFile) throws IOException {
         // Cria e salva a imagem
         Imagens imagem = new Imagens();
         imagem.setNome(imagemFile.getOriginalFilename());
         imagem.setDados(imagemFile.getBytes());
-        imagem = iRepository.save(imagem);
 
-        // Cria e salva o produto
-        Produto produto = new Produto();
+        Produto produto = new ServerProduto();
         produto.setNome(produtoDTO.getNomeDoProduto());
         produto.setDescricao(produtoDTO.getDescricao());
         produto.setPreco(produtoDTO.getPreco());
-        produto.setQuantidadeParaSacola(produto.getQuantidadeEmSacola());
         produto.setImagem(imagem);
 
+        ServerProduto serverProduto = new ServerProduto();
+        serverProduto.setNome(produtoDTO.getNomeDoProduto());
+        serverProduto.setDescricao(produtoDTO.getDescricao());
+        serverProduto.setPreco(produtoDTO.getPreco());
+        serverProduto.setQuantidadeEmEstoque(produtoDTO.getQuantidadeEmEstoque());
+
+        //serverProdutoRepository.save(serverProduto);
+        iRepository.save(imagem);
         produtoRepository.save(produto);
     }
 
-    public Produto saveProdutoSemImagem(ProdutoDTO produtoDTO) {
-        Produto produto = new Produto();
-        produto.setNome(produtoDTO.getNomeDoProduto());
-        produto.setDescricao(produtoDTO.getDescricao());
-        produto.setPreco(produtoDTO.getPreco());
-        produto.setQuantidadeEmEstoque(produtoDTO.getQuantidadeEmEstoque());
-        produto.setValorTotalEmEstoque(produtoDTO.getQuantidadeEmEstoque(), produtoDTO.getPreco());
-
-        return produtoRepository.save(produto);
-    }
-
-    public List<Produto> atualizarTodosProdutos() {
-        var produto = produtoRepository.findAll();
-        for (int i = 0; i < produto.size(); i++) {
-            var quantidade = produtoRepository.somarQuantidadeProdutoEmTodasAsSacolasNative(produto.get(i).getId());
-            produto.get(i).setQuantidadeEmSacola(quantidade);
-            produto.get(i).setValorTotalEmSacola(quantidade, produto.get(i).getPreco());
-        }
-        return produtoRepository.saveAll(produto);
-
-    }
-
-    public Produto atualizarProdutoPorId(ProdutoDTO dto) {
-        var produto = produtoRepository.findById(dto.getId()).get();
-        produto.setDescricao(dto.getDescricao());
-        produto.setImagem(dto.getImagens());
-        produto.setNome(dto.getNomeDoProduto());
-        produto.setPreco(dto.getPreco());
-        produto.setQuantidadeEmSacola(dto.getQuantidadeEmSacola());
-        return produtoRepository.save(produto);
-    }
-
     @Transactional
-    public String deletarProduto(long id) {
-        var produto = produtoRepository.findById(id);
-        List<Sacola> sacolas = sacolaRepository.findAllByProdutoId(id);
-        for (Sacola sacola : sacolas) {
-            sacola.getProduto().removeIf(p -> p.getId().equals(id));
-            sacolaRepository.save(sacola);
+    public List<ServerProduto> saveProdutoSemImagem(List<ServerProduto> produtoDTO) {
+        List<Produto> produtos = new ArrayList<>();
+        List<ServerProduto> serverProdutos = new ArrayList<>();
+        for (ServerProduto p1 : produtoDTO) {
+            ServerProduto serverProduto = new ServerProduto();
+            serverProduto.setNome(p1.getNome());
+            serverProduto.setDescricao(p1.getDescricao());
+            serverProduto.setPreco(p1.getPreco());
+            serverProduto.setQuantidadeEmEstoque(p1.getQuantidadeEmEstoque());
+            serverProduto.setValorTotalEmEstoque();
+            serverProdutos.add(serverProduto);
+            produtos.add(serverProduto);
         }
-
-        if (produto.isPresent()) {
-            produtoRepository.deleteById(id);
-            return "Produto deletado " + produto.toString();
-        }
-        return "Produto não encontrado";
+        //serverProdutoRepository.saveAll(serverProdutos);
+        produtoRepository.saveAll(produtos);
+        return serverProdutos;
 
     }
+
 }

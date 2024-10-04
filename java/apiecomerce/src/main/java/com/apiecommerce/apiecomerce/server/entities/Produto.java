@@ -1,64 +1,81 @@
 package com.apiecommerce.apiecomerce.server.entities;
 
+import java.util.Objects;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Inheritance;
+import jakarta.persistence.InheritanceType;
+import jakarta.persistence.MappedSuperclass;
 import jakarta.persistence.OneToOne;
 import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Entity
 @Setter
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-@EqualsAndHashCode(of = "id")
-public class Produto {
+@Entity(name = "produto")
+@Inheritance(strategy = InheritanceType.JOINED)
+public abstract class Produto {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
     String nome;
     Double preco;
-    int quantidadeEmSacola;
-    int quantidadeEmEstoque;
     String descricao;
-    Double valorTotalEmEstoque;
-    Double valorTotalEmSacola;
     @OneToOne
     Imagens imagem;
 
-    public int setQuantidadeParaSacola(int quantidade) {
-        this.quantidadeEmSacola = this.quantidadeEmSacola * 0;
-        this.quantidadeEmSacola = +quantidade;
-        return quantidadeEmSacola;
+    public Produto(Imagens imagens) {
+        this.imagem = imagens;
     }
 
-    public void setQuantidadeEmSacola(int quantidadeEmSacola) {
-        this.quantidadeEmSacola = this.quantidadeEmSacola * 0;
-        this.quantidadeEmSacola = quantidadeEmSacola;
+    public Produto(String nome, Double preco, String descricao) {
+        this.nome = nome;
+        this.preco = preco;
+        this.descricao = descricao;
     }
 
-    public void setQuantidadeEmEstoqueAtualizada(int quantidadeEmEstoque) {
-        var emSacola = getQuantidadeEmSacola();
-        this.quantidadeEmEstoque = quantidadeEmEstoque - emSacola;
+    public Produto(Double preco) {
+        this.preco = preco;
     }
 
-    public void setValorTotalEmEstoque(int quantidade, Double preco) {
-        this.valorTotalEmEstoque = preco * quantidade;
-    }
+    // public List<ClienteProdutoDTO>
+    // transformaProdutoEmClienteProduto(List<Produto> produto) {
+    // var produtos = produto.stream().map(produtoItem -> {
 
-    public void setValorTotalEmSacola(int quantidade, Double preco) {
-        this.valorTotalEmSacola = preco * quantidade;
-    }
+    // return new ClienteProdutoDTO(
+    // produtoItem.getId(),
+    // produtoItem.getNome(),
+    // produtoItem.getPreco());
+    // }).collect(Collectors.toList());
+    // return produtos;
+    // }
 
     @Override
     public String toString() {
         return "Produtos [id=" + id + ", nome=" + nome + ", preco=" + preco + ", descricao=" + descricao + "]";
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
+        Produto produto = (Produto) o;
+        return Objects.equals(id, produto.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 
 }
