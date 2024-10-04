@@ -32,8 +32,8 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .cors(cors -> cors.configurationSource(request -> {
                     var corsConfiguration = new CorsConfiguration();
-                    corsConfiguration.addAllowedOrigin("http://localhost:3000"); // Permitir acesso de
-                                                                                 // http://localhost:3000
+                    corsConfiguration.addAllowedOrigin("http://localhost:3000"); 
+                    corsConfiguration.addAllowedHeader("webhook/**");
                     corsConfiguration.addAllowedMethod("*"); // Permitir todos os métodos HTTP
                     corsConfiguration.addAllowedHeader("*"); // Permitir todos os cabeçalhos
                     corsConfiguration.setAllowCredentials(true); // Permitir envio de cookies e cabeçalhos de

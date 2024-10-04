@@ -1,4 +1,4 @@
-package com.apiecommerce.apiecomerce.server.entities.DTO;
+package com.apiecommerce.apiecomerce.server.entities.data;
 
 public record PagamentoDTO(
     String numeroCartao,

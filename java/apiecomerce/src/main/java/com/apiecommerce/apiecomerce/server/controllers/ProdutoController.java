@@ -18,7 +18,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.apiecommerce.apiecomerce.server.entities.Produto;
-import com.apiecommerce.apiecomerce.server.entities.DTO.ProdutoDTO;
+import com.apiecommerce.apiecomerce.server.entities.ServerProduto;
+import com.apiecommerce.apiecomerce.server.entities.data.ProdutoDTO;
 import com.apiecommerce.apiecomerce.server.interfaces.ProdutoRepository;
 import com.apiecommerce.apiecomerce.server.services.ProdutoService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -32,8 +33,8 @@ public class ProdutoController {
     ProdutoService produtoService;
 
     @GetMapping("/produtos")
-    public List<Produto> listarProduto() {
-        return produtoService.atualizarTodosProdutos();
+    public List<ServerProduto> listarProduto() {
+        return produtoService.listarProduto();
     }
 
     @PostMapping("/produtoeimagem")
@@ -55,21 +56,8 @@ public class ProdutoController {
     }
 
     @PostMapping("/produto")
-    public ResponseEntity<String> adicionarProdutoSemImagem(@RequestBody ProdutoDTO produto) {
-        var result = produtoService.saveProdutoSemImagem(produto).toString();
+    public ResponseEntity<List<ServerProduto>> adicionarProdutoSemImagem(@RequestBody List<ServerProduto> produto) {
+        var result = produtoService.saveProdutoSemImagem(produto);
         return ResponseEntity.ok().body(result);
-    }
-
-    @PutMapping("/produtos/{id}")
-    public ResponseEntity atualizarQuantidadeProdutos(@RequestBody ProdutoDTO dto, @PathVariable Long id) {
-        if (dto.getId() != id) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-        return ResponseEntity.ok(produtoService.atualizarProdutoPorId(dto));
-    }
-
-    @DeleteMapping("/produtos/{id}")
-    public ResponseEntity<String> deletarProduto(@PathVariable long id) {
-        return ResponseEntity.ok().body(produtoService.deletarProduto(id));
     }
 }
