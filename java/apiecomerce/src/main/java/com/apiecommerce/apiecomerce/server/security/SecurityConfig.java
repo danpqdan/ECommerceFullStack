@@ -14,8 +14,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import com.apiecommerce.apiecomerce.server.services.SecurityFilter;
 
@@ -24,7 +22,7 @@ import com.apiecommerce.apiecomerce.server.services.SecurityFilter;
 public class SecurityConfig {
     @Autowired
     SecurityFilter securityFilter;
-
+    
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         return httpSecurity
@@ -32,7 +30,7 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .cors(cors -> cors.configurationSource(request -> {
                     var corsConfiguration = new CorsConfiguration();
-                    corsConfiguration.addAllowedOrigin("http://localhost:3000"); 
+                    corsConfiguration.addAllowedOrigin("http://localhost:3000");
                     corsConfiguration.addAllowedHeader("webhook/**");
                     corsConfiguration.addAllowedMethod("*"); // Permitir todos os métodos HTTP
                     corsConfiguration.addAllowedHeader("*"); // Permitir todos os cabeçalhos

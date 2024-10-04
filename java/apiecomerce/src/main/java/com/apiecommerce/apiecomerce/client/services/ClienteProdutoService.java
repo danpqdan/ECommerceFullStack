@@ -14,9 +14,7 @@ import com.apiecommerce.apiecomerce.client.repositories.ClienteProdutoRepository
 import com.apiecommerce.apiecomerce.client.repositories.ClienteSacolaRepository;
 import com.apiecommerce.apiecomerce.server.entities.Produto;
 import com.apiecommerce.apiecomerce.server.interfaces.ProdutoRepository;
-import com.apiecommerce.apiecomerce.server.services.CustomUserDetailsService;
 import com.apiecommerce.apiecomerce.server.services.ProdutoService;
-import com.apiecommerce.apiecomerce.server.services.SacolaService;
 
 @Service
 public class ClienteProdutoService {
@@ -28,10 +26,6 @@ public class ClienteProdutoService {
     ClienteProdutoRepository clienteProdutoRepository;
     @Autowired
     ClienteSacolaRepository sacolaRepository;
-    @Autowired
-    SacolaService sacolaService;
-    @Autowired
-    CustomUserDetailsService userDetailsService;
 
     public List<ClienteProduto> retornarProdutos(Long idSacola) {
         return clienteProdutoRepository.findAllBySacolaId(idSacola);
