@@ -12,10 +12,15 @@ import com.apiecommerce.apiecomerce.server.entities.Produto;
 @Repository
 public interface ProdutoRepository extends JpaRepository<Produto, Long> {
 
-    // @Query(value = "SELECT SUM(quantidade_em_sacola) FROM produto WHERE id = :id", nativeQuery = true)
-    // Integer somarQuantidadeProdutoEmTodasAsSacolasNative(@Param("id") Long produtoId);
 
-    // @Query("SELECT p FROM Produto p WHERE p.quantidadeEmSacola = :quantidadeEmSacola")
-    // List<Produto> buscarProdutoPorQuantidade(@Param("quantidadeEmSacola") Long quantidadeEmSacola);
+    // @Query(value = "SELECT SUM(quantidade_em_sacola) FROM produto WHERE id =
+    // :id", nativeQuery = true)
+    // Integer somarQuantidadeProdutoEmTodasAsSacolasNative(@Param("id") Long
+    // produtoId);
+
+    // @Query("SELECT p FROM Produto p WHERE p.quantidadeEmSacola =
+    // :quantidadeEmSacola")
+    // List<Produto> buscarProdutoPorQuantidade(@Param("quantidadeEmSacola") Long
+    // quantidadeEmSacola);
 
 }

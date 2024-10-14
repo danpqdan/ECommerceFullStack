@@ -19,6 +19,7 @@ import com.apiecommerce.apiecomerce.server.interfaces.ProdutoRepository;
 import com.apiecommerce.apiecomerce.server.interfaces.SacolaRepository;
 import com.apiecommerce.apiecomerce.server.interfaces.UsuarioRepository;
 import com.apiecommerce.apiecomerce.server.services.CustomUserDetailsService;
+import com.apiecommerce.apiecomerce.server.services.SacolaService;
 
 @Service
 public class ClienteSacolaService {
@@ -36,6 +37,8 @@ public class ClienteSacolaService {
     SacolaRepository sacolaRepository;
     @Autowired
     UsuarioRepository usuarioRepository;
+    @Autowired
+    SacolaService sacolaService;
 
     public SacolaServer retornarSacola(AuthenticationDTO login) {
         Usuario usuario = userDetailsService.validarUsuario(login);
@@ -49,19 +52,21 @@ public class ClienteSacolaService {
         sacolaCliente.setId(sacola.getId());
         sacolaCliente.setEstadoDaCompra(sacola.getEstadoDaCompra());
         sacolaCliente.setUsuario(sacola.getUsuario());
-        // clienteSacolaRepository.save(sacolaCliente);
+        clienteSacolaRepository.save(sacolaCliente);
         return sacolaCliente;
     }
 
     public List<ClienteProduto> prepararSacolaCliente(ClienteSacolaDTO clienteProduto) {
         SacolaCliente sacola = transformaSacolaEmSacolaCliente(clienteProduto.getLogin());
-        List<ClienteProduto> clienteProduto2 = clienteProdutoService.retornarProdutoEmClienteProduto(clienteProduto);
+        List<ClienteProduto> clienteProduto2 = clienteProdutoService
+                .adicionandoProdutosClientePorProduto(clienteProduto);
         for (int i = 0; i < clienteProduto2.size(); i++) {
             clienteProduto2.get(i).setSacola(sacola);
         }
-        sacola.setClienteProduto(clienteProduto2);
+        sacola.getClienteProduto().addAll(clienteProduto2);
         sacola.setValorFinal(clienteProduto2);
-        clienteProdutoRepository.saveAll(clienteProduto2);
+        sacolaService.valorFinal(clienteProduto);
+        clienteProdutoRepository.saveAllAndFlush(clienteProduto2);
         clienteSacolaRepository.saveAndFlush(sacola);
         return clienteProduto2;
     }

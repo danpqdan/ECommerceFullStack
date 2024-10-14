@@ -17,18 +17,21 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.apiecommerce.apiecomerce.client.entities.ClienteProduto;
 import com.apiecommerce.apiecomerce.client.entities.data.ClienteSacolaDTO;
+import com.apiecommerce.apiecomerce.client.entities.data.PaymentDTO;
 import com.apiecommerce.apiecomerce.client.entities.data.SacolaDTO;
+import com.apiecommerce.apiecomerce.client.repositories.ClienteSacolaRepository;
 import com.apiecommerce.apiecomerce.client.services.ClienteProdutoService;
 import com.apiecommerce.apiecomerce.client.services.ClienteSacolaService;
 import com.apiecommerce.apiecomerce.client.services.MercadoPagoService;
-import com.apiecommerce.apiecomerce.server.entities.SacolaServer;
+import com.apiecommerce.apiecomerce.server.services.CustomUserDetailsService;
 import com.mercadopago.net.HttpStatus;
-import com.mercadopago.resources.payment.Payment;
 
 @RequestMapping("/api")
 @RestController
 public class MPController {
 
+    @Autowired
+    ClienteSacolaRepository clienteSacolaRepository;
     @Autowired
     MercadoPagoService mercadoPago;
     @Autowired
@@ -37,6 +40,8 @@ public class MPController {
     ClienteSacolaService clienteSacolaService;
     @Autowired
     ClienteProdutoService clienteProdutoService;
+    @Autowired
+    CustomUserDetailsService userDetailsService;
 
     @Value("${token.mercadopago}")
     String token;
@@ -52,13 +57,20 @@ public class MPController {
     }
 
     @PostMapping("/mp/sacola")
-    public ResponseEntity postProduto(@RequestBody SacolaDTO dto) {
-        SacolaServer sacola = clienteSacolaService.transformaSacolaEmSacolaCliente(dto.getLogin());
-        List<ClienteProduto> produto = clienteProdutoService.retornarProdutos(sacola.getId());
-        ClienteSacolaDTO s1 = new ClienteSacolaDTO();
-        s1.setLogin(dto.getLogin());
-        s1.setClienteProdutoDTO(produto);
-        return ResponseEntity.ok().body(mercadoPago.getPreferenceId(s1));
+    public ResponseEntity postProduto(@RequestHeader("Authorization") String token, @RequestBody SacolaDTO dto) {
+        if (token.startsWith("Bearer ")) {
+            token = token.substring(7);
+        }
+        if (userDetailsService.validarUsuarioPorToken(token, dto.getLogin()) != null) {
+
+            List<ClienteProduto> produto = clienteProdutoService.retornarProdutos(dto.getLogin());
+            ClienteSacolaDTO s1 = new ClienteSacolaDTO();
+            s1.setLogin(dto.getLogin());
+            s1.setClienteProdutoDTO(produto);
+            return ResponseEntity.ok().body(mercadoPago.getPreferenceId(s1));
+        } else {
+            return ResponseEntity.badRequest().build();
+        }
     }
 
     @GetMapping("/mercadopago")
@@ -76,11 +88,6 @@ public class MPController {
             @RequestParam(required = false) String merchant_account_id) {
 
         if ("approved".equalsIgnoreCase(status)) {
-            // Aqui você pode atualizar o status da sacola ou executar outras lógicas
-            // necessárias
-            // Exemplo: atualizar a sacola para 'paga' usando os dados recebidos
-            // updateSacolaToPaid(merchant_order_id);
-
             System.out.println("Pagamento aprovado: " + payment_id);
         } else {
             System.out.println("Pagamento não aprovado: " + status);
@@ -93,22 +100,34 @@ public class MPController {
     @PostMapping("/mercadopago")
     public ResponseEntity<Void> receiveWebhook(@RequestBody Map<String, Object> payload) {
         try {
-            // Extrair dados do payload
+
             Map<String, Object> data = (Map<String, Object>) payload.get("data");
-            String paymentId = String.valueOf(data.get("id"));
+            Long paymentId = Long.parseLong(String.valueOf(data.get("id")));
+            PaymentDTO payment = mercadoPago.consultarPagamento(paymentId);
 
-            // Consultar o pagamento
-            Payment payment = mercadoPago.consultarPagamento(paymentId);
-
-            // Verificar o status do pagamento
             if (payment.getStatus().equalsIgnoreCase("approved")) {
-                // Lógica para atualizar a sacola/pedido como "pago"
+
+                var sacola = clienteSacolaRepository.findByPaymentId(payment.getCollectorId());
+                sacola.setPaymentId(paymentId);
+                sacola.setDate_approved(payment.getDate_approved());
+                sacola.setStatus_detail(payment.getStatus_detail());
+                sacola.setPayment_method_id(payment.getPayment_method_id());
+                sacola.setPayment_type_id(payment.getPayment_type_id());
+                sacola.setTransaction_amount(payment.getTransaction_amount());
+                sacola.setStatus(payment.getStatus());
+                clienteSacolaRepository.saveAndFlush(sacola);
                 System.out.println("Pagamento aprovado: " + paymentId);
             } else {
+                var sacola = clienteSacolaRepository.findByPaymentId(payment.getCollectorId());
+                sacola.setPaymentId(paymentId);
+                sacola.setDate_approved(payment.getDate_approved());
+                sacola.setStatus_detail(payment.getStatus_detail());
+                sacola.setPayment_method_id(payment.getPayment_method_id());
+                sacola.setPayment_type_id(payment.getPayment_type_id());
+                clienteSacolaRepository.saveAndFlush(sacola);
                 System.out.println("Pagamento com status: " + payment.getStatus());
             }
 
-            // Responder sucesso para o Mercado Pago
             return ResponseEntity.ok().build();
 
         } catch (Exception e) {

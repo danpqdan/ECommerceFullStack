@@ -1,8 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { Swiper, SwiperSlide, useSwiper } from 'swiper/react';
+
 import 'swiper/css';
 import 'swiper/less';
-import { Swiper, SwiperSlide, useSwiper } from 'swiper/react';
-import './CSS/carouselhomecss.css';
 
 const SlideNextButton = () => {
     const swiper = useSwiper();
@@ -19,20 +19,16 @@ const SlidePrevButton = () => {
     const swiper = useSwiper();
 
     return (
-        <button onClick={() => swiper.slidePrev()} className="swiper-button-prev">
+        <button onClick={() => swiper.slidePrev()} className="swiper-button-pdddrev">
 
         </button>
     );
 };
 
-const CarrouselHome = ({ itens }) => {
+const PromocoesItens = ({ itens }) => {
     const [images, setImages] = useState([]);
     const swiperRef = useRef(null);
 
-
-
-    // Função para buscar as imagens do backend
-    // Função para buscar imagens do backend
     useEffect(() => {
         const fetchImages = async () => {
             try {
@@ -59,6 +55,7 @@ const CarrouselHome = ({ itens }) => {
 
         fetchImages();
     }, []);
+
 
     return (
         <div className="carousel-container">
@@ -88,4 +85,4 @@ const CarrouselHome = ({ itens }) => {
     )
 }
 
-export default CarrouselHome;
+export default PromocoesItens;

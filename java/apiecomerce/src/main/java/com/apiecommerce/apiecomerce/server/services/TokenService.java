@@ -4,17 +4,14 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.Date;
-import java.util.TimeZone;
+import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import javax.crypto.SecretKey;
+
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Service;
 
-import com.apiecommerce.apiecomerce.client.entities.data.AuthenticationDTO;
 import com.apiecommerce.apiecomerce.server.entities.Usuario;
-import com.apiecommerce.apiecomerce.server.entities.data.LoginResponseDTO;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTCreationException;
@@ -22,10 +19,13 @@ import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureException;
 import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtException;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.SignatureException;
 import io.jsonwebtoken.UnsupportedJwtException;
+import io.jsonwebtoken.security.Keys;
 
 @Service
 public class TokenService {
@@ -33,14 +33,21 @@ public class TokenService {
     @Value("${api.security.token.secret}")
     private String secret;
 
+    private SecretKey secretKey;
+
+    public TokenService() {
+        this.secretKey = Keys.secretKeyFor(SignatureAlgorithm.HS256);
+    }
+
     public String generatedToken(Usuario user) {
         try {
-            Algorithm algorithm = Algorithm.HMAC256(secret);
-            String token = JWT.create()
-                    .withIssuer("apiecomerce")
-                    .withSubject(user.getUsername())
-                    .withExpiresAt(genExpirationDate())
-                    .sign(algorithm);
+            String token = Jwts.builder()
+                    .setIssuer("apiecomerce")
+                    .setSubject(user.getUsername())
+                    .setExpiration(genExpirationDate())
+                    .claim("role", user.getRole().getRole())
+                    .signWith(secretKey)
+                    .compact();
             return token;
         } catch (JWTCreationException e) {
             throw new RuntimeException("Error while generation token", e);
@@ -49,50 +56,79 @@ public class TokenService {
 
     public String validateToken(String token) {
         try {
-            Algorithm algorithm = Algorithm.HMAC256(secret);
-            return JWT.require(algorithm)
-                    .withIssuer("apiecomerce")
+            Claims claims = Jwts.parserBuilder()
+                    .setSigningKey(secretKey)
+                    .requireIssuer("apiecomerce")
                     .build()
-                    .verify(token)
-                    .getSubject();
+                    .parseClaimsJws(token)
+                    .getBody();
+
+            return claims.getSubject();
         } catch (JWTVerificationException exception) {
             return "";
         }
     }
 
-    private Instant genExpirationDate() {
-        return LocalDateTime.now().plusHours(2).toInstant(ZoneOffset.of("-03:00"));
+    private Date genExpirationDate() {
+        Instant expiration = LocalDateTime.now().plusHours(2).toInstant(ZoneOffset.of("-03:00"));
+        return Date.from(expiration);
     }
 
     public Claims extractAllClaims(String token) {
-        return Jwts.parser()
-                .setSigningKey(secret)
+        return Jwts.parserBuilder()
+                .setSigningKey(secretKey)
+                .build()
                 .parseClaimsJws(token)
                 .getBody();
+
+    }
+
+    public String extractUserRoles(String token) {
+        Claims claims = extractAllClaims(token);
+        return claims.get("role", String.class);
     }
 
     // Extrair o username (subject) do token
     public String extrairUsuario(String token) {
-        Algorithm algorithm = Algorithm.HMAC256(secret);
+        try {
+            Claims claims = Jwts.parserBuilder()
+                    .setSigningKey(secretKey) // Define a chave para validação
+                    .build()
+                    .parseClaimsJws(token) // Decodifica o token
+                    .getBody(); // Obtém o corpo (claims) do token
 
-        DecodedJWT decodedJWT = JWT.require(algorithm)
-                .build()
-                .verify(token);
-
-        return decodedJWT.getSubject();
+            return claims.getSubject(); // Retorna o usuário (subject) do token
+        } catch (ExpiredJwtException e) {
+            // Token expirado
+            throw new RuntimeException("Token expirado: " + e.getMessage(), e);
+        } catch (SignatureException e) {
+            // Assinatura inválida
+            throw new RuntimeException("Assinatura inválida: " + e.getMessage(), e);
+        } catch (IllegalArgumentException e) {
+            // Token malformado
+            throw new RuntimeException("Token malformado: " + e.getMessage(), e);
+        } catch (Exception e) {
+            // Outros erros
+            throw new RuntimeException("Erro ao extrair usuário do token: " + e.getMessage(), e);
+        }
     }
 
-    public boolean isTokenExpired(String token) {
-        return extractAllClaims(token).getExpiration().before(new Date());
-    }
+    // public boolean isTokenExpired(String token) {
+    // return extractAllClaims(token).getExpiration().before(new Date());
+    // }
 
-    public boolean validateToken(String token, String username) {
+    public boolean validateTokenFromUsername(String token, String username) {
+        boolean validacao = false;
         try {
             String usernameToken = extrairUsuario(token);
-            return (username.equals(usernameToken) && !isTokenExpired(token));
+            if (username.equals(usernameToken)) {
+                return validacao = true;
+            }
+            System.out.println(validacao);
+            return false;
         } catch (SignatureException | ExpiredJwtException | UnsupportedJwtException e) {
             // Exceções comuns de um token inválido
-            return false;
+            return validacao;
         }
     }
 

@@ -43,19 +43,19 @@ public class ImagensController {
     }
 
     // Endpoint para baixar arquivo pelo ID
-    @GetMapping("/{id}")
-    public ResponseEntity<byte[]> downloadArquivo(@PathVariable Long id) {
-        Optional<Imagens> arquivoOptional = imagensService.obterArquivoPorId(id);
+    // @GetMapping("/{id}")
+    // public ResponseEntity<byte[]> downloadArquivo(@PathVariable Long id) {
+    //     Optional<Imagens> arquivoOptional = imagensService.obterArquivoPorId(id);
 
-        if (arquivoOptional.isPresent()) {
-            Imagens imagem = arquivoOptional.get();
-            return ResponseEntity.ok()
-                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + imagem.getNome() + "\"")
-                    .body(imagem.getDados());
-        }
+    //     if (arquivoOptional.isPresent()) {
+    //         Imagens imagem = arquivoOptional.get();
+    //         return ResponseEntity.ok()
+    //                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + imagem.getNome() + "\"")
+    //                 .body(imagem.getDados());
+    //     }
 
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-    }
+    //     return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+    // }
 
     @GetMapping
     public ResponseEntity<List<Imagens>> listarImagens() {

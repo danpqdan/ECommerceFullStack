@@ -1,13 +1,19 @@
-// ProductList.js
-import React, { useState, useEffect } from 'react';
-import './CSS/produtoscss.css'
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-const ProductList = ({ product }) => {
+
+const ListarProduto = ({ product }) => {
     const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const navigate = useNavigate();
+
+
+    const ProdutoCardInfo = (product) => {
+        // Redireciona o usuário e passa o objeto `product` no state
+        navigate(`/produto/${product.id}`, { state: { product } });
+    };
+
 
     useEffect(() => {
         const fetchProducts = async () => {
@@ -20,7 +26,7 @@ const ProductList = ({ product }) => {
                         'Authorization': `${token}`,
                         'Content-Type': 'application/json'
                     },
-                    credentials: 'include' // Inclua isso se você estiver usando cookies para autenticação
+                    credentials: 'include'
                 });
 
                 if (!response.ok) {
@@ -41,21 +47,16 @@ const ProductList = ({ product }) => {
     if (loading) return <p>Loading...</p>;
     if (error) return <p>Error loading products: {error.message}</p>;
 
-    const ProdutoCardInfo = (product) => {
-        // Redireciona o usuário e passa o objeto `product` no state
-        navigate(`/produto/${product.id}`, { state: { product } });
-    };
-
 
     return (
         <div>
             <h1>Product List</h1>
             <ul id='ListaProduto'>
-
                 {products.map(product => (
                     <li key={product.id}>
                         <button id='card-produto' onClick={() => ProdutoCardInfo(product)}>
-                            <img src={product.imagem.urlPrincipal} width={200} />
+
+                            <img src={product.imagem.urlPrincipal} alt={product.nome} width="200" />
                             <h2>{product.nome}</h2>
                             <p>
                                 Price: ${typeof product.preco === 'number' ? product.preco.toFixed(2) : 'N/A'}
@@ -66,6 +67,6 @@ const ProductList = ({ product }) => {
             </ul>
         </div>
     );
-};
+}
 
-export default ProductList;
+export default ListarProduto;

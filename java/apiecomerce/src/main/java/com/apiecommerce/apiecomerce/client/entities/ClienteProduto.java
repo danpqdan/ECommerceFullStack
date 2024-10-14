@@ -6,6 +6,7 @@ import java.util.UUID;
 import com.apiecommerce.apiecomerce.server.entities.Produto;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -31,7 +32,7 @@ public class ClienteProduto {
 
     int quantidadeProduto;
     double valorTotalDeProduto;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     SacolaCliente sacola;
 
     public ClienteProduto() {

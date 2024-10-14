@@ -28,11 +28,7 @@ public class AdminController {
 
     @GetMapping()
     public ResponseEntity<Void> getAdminData() {
-        if (userHasAccess()) {
-            return ResponseEntity.ok().build(); // Status 200 OK
-        } else {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build(); // Status 403 Forbidden
-        }
+        return ResponseEntity.ok().build(); // Status 200 OK
     }
 
     private boolean userHasAccess() {

@@ -6,7 +6,8 @@ import Carrinho from './pages/Carrinho';
 import Home from './pages/Home';
 import LoginForm from './pages/Login';
 import Produtos from './pages/Produtos';
-import PainelAdmin from './pages/PainelAdmin';
+import PainelAdmin from './pages/admin/PainelAdmin';
+import ProdutoCard from './components/ProdutoCard';
 
 function App() {
 
@@ -29,6 +30,7 @@ function App() {
           <Route path="/carrinho" element={<Carrinho />} />
           <Route path="/login" element={<LoginForm />} />
           <Route path='/paineladmin' element={<PainelAdmin />} />
+          <Route path="/produto/:id" element={<ProdutoCard />} />
 
         </Routes>
 

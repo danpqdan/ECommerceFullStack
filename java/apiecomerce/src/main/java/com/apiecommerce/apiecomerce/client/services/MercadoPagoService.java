@@ -1,6 +1,7 @@
 package com.apiecommerce.apiecomerce.client.services;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,8 +15,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import com.apiecommerce.apiecomerce.client.entities.ClienteProduto;
+import com.apiecommerce.apiecomerce.client.entities.SacolaCliente;
 import com.apiecommerce.apiecomerce.client.entities.data.ClienteSacolaDTO;
+import com.apiecommerce.apiecomerce.client.entities.data.PaymentDTO;
 import com.apiecommerce.apiecomerce.client.repositories.ClienteProdutoRepository;
+import com.apiecommerce.apiecomerce.client.repositories.ClienteSacolaRepository;
 import com.apiecommerce.apiecomerce.server.interfaces.SacolaRepository;
 import com.apiecommerce.apiecomerce.server.services.CustomUserDetailsService;
 import com.mercadopago.MercadoPagoConfig;
@@ -39,14 +43,23 @@ public class MercadoPagoService {
         @Autowired
         SacolaRepository sacolaRepository;
         @Autowired
+        ClienteSacolaRepository clienteSacolaRepository;
+        @Autowired
         ClienteSacolaService clienteSacolaService;
         @Autowired
         ClienteProdutoRepository clienteProdutoRepository;
 
         public List<ClienteProduto> listProduto(ClienteSacolaDTO sacolaDTO) {
                 var sacola = clienteSacolaService.transformaSacolaEmSacolaCliente(sacolaDTO.getLogin());
-                var produtos = clienteProdutoRepository.findAllBySacolaId(sacola.getId());
+                var produtos = clienteProdutoRepository
+                                .encontreTodosOsClienteProdutoPorId(sacola.getId());
                 return produtos;
+        }
+
+        public SacolaCliente sacolaCliente(ClienteSacolaDTO sacolaDTO) {
+                var usuario = userDetailsService.validarUsuario(sacolaDTO.getLogin());
+                var sacola = clienteSacolaRepository.findByUsuarioId(usuario.getId());
+                return sacola;
         }
 
         public List<String> getPreferenceId(ClienteSacolaDTO sacola) {
@@ -73,7 +86,7 @@ public class MercadoPagoService {
                         }
                         PreferenceBackUrlsRequest backUrlsRequest = PreferenceBackUrlsRequest
                                         .builder()
-                                        .success("https://36f7-2804-6828-fea6-5e00-4cd2-41bd-37e3-9ff8.ngrok-free.app/webhook/mercadopago/")
+                                        .success("https://55e1-2804-6828-fea6-5e00-edfe-8349-5218-ec5f.ngrok-free.app/webhook/mercadopago/")
                                         .pending("https://linkedin.com")
                                         .failure("https://youtube.com.br")
                                         .build();
@@ -88,9 +101,16 @@ public class MercadoPagoService {
                         Preference preference = client.create(preferenceRequest);
                         List<String> list = new ArrayList<>();
                         list.add(preference.getId());
+                        list.add(preference.getCollectorId().toString());
+                        list.add(preference.getClientId());
                         list.add(preference.getMarketplace());
                         list.add(preference.getInitPoint());
                         list.add(preference.getSandboxInitPoint());
+
+                        var sacolaDTO = sacolaCliente(sacola);
+                        sacolaDTO.setPreferenceId(preference.getId());
+                        sacolaDTO.setPaymentId(preference.getCollectorId());
+                        clienteSacolaRepository.saveAndFlush(sacolaDTO);
 
                         return list;
                 } catch (MPException | MPApiException e) {
@@ -98,7 +118,7 @@ public class MercadoPagoService {
                 }
         }
 
-        public Payment consultarPagamento(String paymentId) throws Exception {
+        public PaymentDTO consultarPagamento(Long paymentId) throws Exception {
                 // Construir a URL para a API de Pagamentos do Mercado Pago
                 String url = "https://api.mercadopago.com/v1/payments/" + paymentId;
 
@@ -109,8 +129,10 @@ public class MercadoPagoService {
 
                 HttpEntity<Void> entity = new HttpEntity<>(headers);
 
-                ResponseEntity<Payment> response = restTemplate.exchange(url, HttpMethod.GET, entity,
-                                Payment.class);
+                ResponseEntity<PaymentDTO> response = restTemplate.exchange(url, HttpMethod.GET, entity,
+                                PaymentDTO.class);
+
+                System.out.println(response.getBody());
 
                 // Retornar o objeto Payment da resposta
                 return response.getBody();

@@ -5,10 +5,14 @@ import './CSS/promocoescss.css';
 import ProdutosPromocoes from './ProdutosPromocoes';
 
 
-const Promocoes = () => {
+const PromocoesIcons = () => {
     return (
         <>
             <div className='list-btn'>
+                <button className='btn-home'>
+                    <PiHeartbeatBold id='icon' />
+                    <h2>Todos</h2>
+                </button>
                 <button className='btn-home'>
                     <PiHeartbeatBold id='icon' />
                     <h2>Saúde e Bem estar</h2>
@@ -32,4 +36,4 @@ const Promocoes = () => {
     );
 }
 
-export default Promocoes;
+export default PromocoesIcons;

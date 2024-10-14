@@ -7,8 +7,10 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestHeader;
 
 import com.apiecommerce.apiecomerce.client.entities.SacolaCliente;
 import com.apiecommerce.apiecomerce.client.entities.data.AuthenticationDTO;
@@ -34,10 +36,12 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Autowired
     private AuthenticationManager authenticationManager;
 
-    public String loginDeUsuario(AuthenticationDTO login) throws UsernameNotFoundException {
+    public LoginResponseDTO loginDeUsuario(AuthenticationDTO login) {
         var usernamePassword = new UsernamePasswordAuthenticationToken(login.getUsername(), login.getPassword());
         var auth = this.authenticationManager.authenticate(usernamePassword);
-        return tokenService.generatedToken((Usuario) auth.getPrincipal());
+        var token = tokenService.generatedToken((Usuario) auth.getPrincipal());
+        var tokeRole = tokenService.extractUserRoles(token);
+        return new LoginResponseDTO(token, tokeRole);
 
     }
 
@@ -66,7 +70,7 @@ public class CustomUserDetailsService implements UserDetailsService {
     public String transformAdminRole(AuthenticationDTO login) {
         Usuario usuario = usuarioRepository.encontrarByUsername(login.getUsername());
         usuario.setRole(Roles.ADMIN);
-        usuarioRepository.saveAndFlush(usuario);
+        usuarioRepository.save(usuario);
         return "Usuario atualizado";
     }
 
@@ -75,12 +79,25 @@ public class CustomUserDetailsService implements UserDetailsService {
         return usuarioRepository.findByUsername(username);
     }
 
-    public Usuario validarUsuario(AuthenticationDTO login) throws UsernameNotFoundException {
-        UserDetails uDetails = loadUserByUsername(login.getUsername());
-        if (uDetails.getPassword() != login.getPassword()) {
-            System.out.println("Usuario não encontrado");
+    public UserDetails validarUsuarioPorToken(String token, AuthenticationDTO login) {
+        var userToken = tokenService.extrairUsuario(token);
+        var usuario = validarUsuario(login);
+        if (userToken.equals(usuario.getUsername())) {
+            var user = loadUserByUsername(login.getUsername());
+            return user;
         }
-        return usuarioRepository.encontrarByUsername(login.getUsername());
+        return null;
+    }
+
+    public Usuario validarUsuario(AuthenticationDTO login)
+            throws UsernameNotFoundException {
+        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        var usuario = usuarioRepository.findByUsername(login.getUsername());
+        if (usuario.getUsername().equals(login.getUsername())
+                && passwordEncoder.matches(login.getPassword(), usuario.getPassword())) {
+            return usuarioRepository.encontrarByUsername(login.getUsername());
+        }
+        return null;
     }
 
     public boolean testeUsuario(AuthenticationDTO login) {

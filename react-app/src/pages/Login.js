@@ -1,10 +1,16 @@
 import React, { useState } from 'react';
+import useFetchData from '../hook/useFetchData';
+import { Navigate, useNavigate } from 'react-router-dom';
+
+
 
 const LoginForm = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [errors, setErrors] = useState({});
     const [loading, setLoading] = useState(false);
+    const navigate = useNavigate();
+
 
 
     // Função de validação
@@ -48,6 +54,13 @@ const LoginForm = () => {
 
             const data = await response.json();
             localStorage.setItem('token', data.token);
+            localStorage.setItem('role', data.role)
+
+            if (data.role === 'role_admin') {
+                navigate('/paineladmin'); // Redireciona para a página do admin
+            } else {
+                navigate('/carrinho'); // Redireciona para a página do usuário comum
+            }
 
         } catch (error) {
             console.error('Error:', error);
@@ -87,6 +100,7 @@ const LoginForm = () => {
             <button type="submit" disabled={loading}>
                 {loading ? 'Logging in...' : 'Login'}
             </button>
+            { }
         </form>
     );
 };

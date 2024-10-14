@@ -1,9 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import ProductForm from '../components/ProductForm';
-import ImagemUploadForm from '../components/ProductFormCarousel';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+
+import AdicionarProduto from '../admin/components/AdicionarProduto'
+import ListarProduto from '../admin/components/ListarProduto'
+import ListarSacola from '../admin/components/Sacola'
+import NavBarAdmin from './components/NavBarAdmin';
+import Sacola from '../admin/components/Sacola';
 
 const PainelAdmin = () => {
     const [status, setStatus] = useState('loading'); // 'loading', 'authorized', 'unauthorized', 'error'
+    const [sessaoSeleciona, setSessaoSelecionada] = useState(); // Componente inicial
 
     useEffect(() => {
         const fetchData = async () => {
@@ -39,13 +45,33 @@ const PainelAdmin = () => {
     }
 
     if (status === 'authorized') {
+
+        const renderComponent = () => {
+            switch (sessaoSeleciona) {
+                case 'listarProduto':
+                    return <ListarProduto />;
+                case 'adicionarProduto':
+                    return <AdicionarProduto />;
+                case 'listarSacola':
+                    return <ListarSacola />;
+                default:
+                    return "";
+            }
+        };
+
+
         return (
-            <div>
-                <h1>Admin Page</h1>
-                <p>Welcome to the admin page!</p>
-                <ProductForm />
-                <ImagemUploadForm />
-            </div>
+            <>
+                <div>
+                    <NavBarAdmin setSessaoSelecionada={setSessaoSelecionada} />
+                    <div className="component-container">
+                        {renderComponent()}
+                    </div>
+
+                </div>
+
+
+            </>
         );
     }
 

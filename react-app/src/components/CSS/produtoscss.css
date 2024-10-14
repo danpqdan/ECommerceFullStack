@@ -1,11 +1,24 @@
+#ListaProduto {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+}
+
 #card-produto {
-    background-color: aqua;
+    background-color: transparent;
     border-radius: 10px;
     border: 0.2px solid grey;
+    display: flex;
+    flex-direction: column;
 }
 
 #card-produto>li,
 h2,
 p {
     color: black;
+}
+
+#card-produto:hover {
+    background-color: aliceblue;
+    cursor: pointer;
 }

@@ -8,7 +8,8 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
-import jakarta.persistence.MappedSuperclass;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -29,6 +30,9 @@ public abstract class Produto {
     String nome;
     Double preco;
     String descricao;
+    @ManyToOne()
+    @JoinColumn(name = "categoria_id")
+    Categoria categoria;
     @OneToOne
     Imagens imagem;
 
@@ -45,18 +49,6 @@ public abstract class Produto {
     public Produto(Double preco) {
         this.preco = preco;
     }
-
-    // public List<ClienteProdutoDTO>
-    // transformaProdutoEmClienteProduto(List<Produto> produto) {
-    // var produtos = produto.stream().map(produtoItem -> {
-
-    // return new ClienteProdutoDTO(
-    // produtoItem.getId(),
-    // produtoItem.getNome(),
-    // produtoItem.getPreco());
-    // }).collect(Collectors.toList());
-    // return produtos;
-    // }
 
     @Override
     public String toString() {

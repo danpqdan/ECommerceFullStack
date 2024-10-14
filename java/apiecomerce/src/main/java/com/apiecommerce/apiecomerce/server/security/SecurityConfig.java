@@ -22,7 +22,7 @@ import com.apiecommerce.apiecomerce.server.services.SecurityFilter;
 public class SecurityConfig {
     @Autowired
     SecurityFilter securityFilter;
-    
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         return httpSecurity
@@ -43,12 +43,14 @@ public class SecurityConfig {
 
                         .requestMatchers("/api/admin").hasRole("ADMIN")
 
-                        .requestMatchers(HttpMethod.GET, "/api/produto").hasAnyRole("ADMIN", "USER")
-                        .requestMatchers(HttpMethod.POST, "/api/produto").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/api/produtos").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/produtos").hasRole("ADMIN")
 
                         .requestMatchers(HttpMethod.GET, "/api/imagens/carouselhome").permitAll()
 
                         .requestMatchers("/api/sacola/**").permitAll()
+
+                        .requestMatchers(HttpMethod.POST, "api/mercadopago").permitAll()
 
                         .requestMatchers("swagger-ui/**", "/v3/api-docs/**").permitAll()
                         .anyRequest().authenticated())

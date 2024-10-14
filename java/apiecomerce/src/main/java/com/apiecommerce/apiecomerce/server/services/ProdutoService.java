@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.hibernate.annotations.Any;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,10 +14,12 @@ import org.springframework.web.multipart.MultipartFile;
 import com.apiecommerce.apiecomerce.client.entities.ClienteProduto;
 import com.apiecommerce.apiecomerce.client.entities.data.ClienteSacolaDTO;
 import com.apiecommerce.apiecomerce.client.entities.data.SacolaDTO;
+import com.apiecommerce.apiecomerce.server.entities.Categoria;
 import com.apiecommerce.apiecomerce.server.entities.Imagens;
 import com.apiecommerce.apiecomerce.server.entities.Produto;
 import com.apiecommerce.apiecomerce.server.entities.ServerProduto;
 import com.apiecommerce.apiecomerce.server.entities.data.ProdutoDTO;
+import com.apiecommerce.apiecomerce.server.interfaces.CategoriaRepository;
 import com.apiecommerce.apiecomerce.server.interfaces.ImagensRepository;
 import com.apiecommerce.apiecomerce.server.interfaces.ProdutoRepository;
 import com.apiecommerce.apiecomerce.server.interfaces.SacolaRepository;
@@ -33,6 +36,8 @@ public class ProdutoService {
     SacolaRepository sacolaRepository;
     @Autowired
     ServerProdutoRepository serverProdutoRepository;
+    @Autowired
+    CategoriaRepository categoriaRepository;
 
     public ServerProduto retornarUmProduto(Long id) {
         return serverProdutoRepository.findById(id).orElseThrow();
@@ -42,26 +47,37 @@ public class ProdutoService {
         return serverProdutoRepository.findAll();
     }
 
-    @Transactional
-    public void saveProdutoComImagem(ProdutoDTO produtoDTO, MultipartFile imagemFile) throws IOException {
-        // Cria e salva a imagem
+    public void saveProdutoComImagem(ProdutoDTO produtoDTO) throws IOException {
+
         Imagens imagem = new Imagens();
-        imagem.setNome(imagemFile.getOriginalFilename());
-        imagem.setDados(imagemFile.getBytes());
+        imagem.setNome(produtoDTO.getImagemDTO().getNome());
+        imagem.setDescricao(produtoDTO.getImagemDTO().getDescricao());
+        imagem.setUrlPrincipal(produtoDTO.getImagemDTO().getUrlPrincipal());
+        imagem.setUrlMiniatura(produtoDTO.getImagemDTO().getUrlMiniatura());
+        imagem.setUrlMiniatura2(produtoDTO.getImagemDTO().getUrlMiniatura2());
+        imagem.setUrlMiniatura3(produtoDTO.getImagemDTO().getUrlMiniatura3());
+        imagem.setUrlMiniatura4(produtoDTO.getImagemDTO().getUrlMiniatura4());
 
         Produto produto = new ServerProduto();
         produto.setNome(produtoDTO.getNomeDoProduto());
         produto.setDescricao(produtoDTO.getDescricao());
         produto.setPreco(produtoDTO.getPreco());
         produto.setImagem(imagem);
+        var categoria = categoriaRepository.findByCategoria(produtoDTO.getCategoria().getCategoria());
+        if (categoria.isEmpty()) {
+            Categoria novaCategoria = new Categoria(produtoDTO.getCategoria().getCategoria());
+            novaCategoria = categoriaRepository.save(novaCategoria);
+            produto.setCategoria(novaCategoria);
+        }
+        produto.setCategoria(categoria.get());
 
         ServerProduto serverProduto = new ServerProduto();
         serverProduto.setNome(produtoDTO.getNomeDoProduto());
         serverProduto.setDescricao(produtoDTO.getDescricao());
         serverProduto.setPreco(produtoDTO.getPreco());
         serverProduto.setQuantidadeEmEstoque(produtoDTO.getQuantidadeEmEstoque());
+        produto.setCategoria(categoria.get());
 
-        //serverProdutoRepository.save(serverProduto);
         iRepository.save(imagem);
         produtoRepository.save(produto);
     }
@@ -80,7 +96,7 @@ public class ProdutoService {
             serverProdutos.add(serverProduto);
             produtos.add(serverProduto);
         }
-        //serverProdutoRepository.saveAll(serverProdutos);
+        // serverProdutoRepository.saveAll(serverProdutos);
         produtoRepository.saveAll(produtos);
         return serverProdutos;
 

@@ -1,5 +1,6 @@
 package com.apiecommerce.apiecomerce.client.services;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -9,11 +10,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.apiecommerce.apiecomerce.client.entities.ClienteProduto;
+import com.apiecommerce.apiecomerce.client.entities.data.AuthenticationDTO;
 import com.apiecommerce.apiecomerce.client.entities.data.ClienteSacolaDTO;
 import com.apiecommerce.apiecomerce.client.repositories.ClienteProdutoRepository;
 import com.apiecommerce.apiecomerce.client.repositories.ClienteSacolaRepository;
 import com.apiecommerce.apiecomerce.server.entities.Produto;
 import com.apiecommerce.apiecomerce.server.interfaces.ProdutoRepository;
+import com.apiecommerce.apiecomerce.server.services.CustomUserDetailsService;
 import com.apiecommerce.apiecomerce.server.services.ProdutoService;
 
 @Service
@@ -26,12 +29,16 @@ public class ClienteProdutoService {
     ClienteProdutoRepository clienteProdutoRepository;
     @Autowired
     ClienteSacolaRepository sacolaRepository;
+    @Autowired
+    CustomUserDetailsService userDetailsService;
 
-    public List<ClienteProduto> retornarProdutos(Long idSacola) {
-        return clienteProdutoRepository.findAllBySacolaId(idSacola);
+    public List<ClienteProduto> retornarProdutos(AuthenticationDTO authenticationDTO) {
+        var usuario = userDetailsService.validarUsuario(authenticationDTO);
+        return clienteProdutoRepository
+                .encontreTodosOsClienteProdutoPorId(usuario.getSacola().getId());
     }
 
-    public List<ClienteProduto> retornarProdutoEmClienteProduto(ClienteSacolaDTO produto) {
+    public List<ClienteProduto> adicionandoProdutosClientePorProduto(ClienteSacolaDTO produto) {
         List<Produto> produtos = produtoRepository
                 .findAllById(produto.getClienteProdutoDTO().stream().mapToLong(ClienteProduto::getId).boxed()
                         .toList());
