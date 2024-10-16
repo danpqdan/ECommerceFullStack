@@ -1,13 +1,14 @@
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 
 import './App.css';
 import Navbar from "./components/NavBar";
+import ProdutoCard from './components/ProdutoCard';
+import PainelAdmin from './pages/admin/PainelAdmin';
 import Carrinho from './pages/Carrinho';
 import Home from './pages/Home';
-import LoginForm from './pages/Login';
+import LoginForm from './pages/LoginForm';
 import Produtos from './pages/Produtos';
-import PainelAdmin from './pages/admin/PainelAdmin';
-import ProdutoCard from './components/ProdutoCard';
+import RegisterForm from './pages/RegisterForm';
 
 function App() {
 
@@ -29,8 +30,10 @@ function App() {
           <Route path="/produtos" element={<Produtos />} />
           <Route path="/carrinho" element={<Carrinho />} />
           <Route path="/login" element={<LoginForm />} />
+          <Route path="/register" element={<RegisterForm />} />
           <Route path='/paineladmin' element={<PainelAdmin />} />
           <Route path="/produto/:id" element={<ProdutoCard />} />
+          <Route path="/produto-preview" element={<ProdutoCard />} />
 
         </Routes>
 

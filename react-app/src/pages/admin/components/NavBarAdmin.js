@@ -7,9 +7,9 @@ const NavBarAdmin = ({ setSessaoSelecionada }) => {
         <div className='NavBarAdmin'>
             <ul>
                 <p>Welcome to the admin page!</p>
-                <button onClick={() => setSessaoSelecionada('listarProduto')}><li id='AdminList'>Listar Produtos</li></button>
-                <button onClick={() => setSessaoSelecionada('adicionarProduto')}><li id='AdminList'>Adicionar Produtos</li></button>
-                <button onClick={() => setSessaoSelecionada('listarSacola')}><li id='AdminList'>Listar Sacolas</li></button>
+                <button onClick={() => setSessaoSelecionada('listarProduto')} id='btnForm'><li>Listar Produtos</li></button>
+                <button onClick={() => setSessaoSelecionada('adicionarProduto')} id='btnForm'><li>Adicionar Produtos</li></button>
+                <button onClick={() => setSessaoSelecionada('listarSacola')} id='btnForm'><li>Listar Sacolas</li></button>
             </ul>
         </div>
     );

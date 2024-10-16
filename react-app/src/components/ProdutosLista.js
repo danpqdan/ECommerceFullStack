@@ -16,11 +16,11 @@ const ProductList = ({ product }) => {
             try {
                 const response = await fetch('http://localhost:8080/api/produtos', {
                     method: 'GET',
-                    headers: {
-                        'Authorization': `${token}`,
-                        'Content-Type': 'application/json'
-                    },
-                    credentials: 'include' // Inclua isso se você estiver usando cookies para autenticação
+                    // headers: {
+                    //     'Authorization': `${token}`,
+                    //     'Content-Type': 'application/json'
+                    // },
+                    // credentials: 'include' // Inclua isso se você estiver usando cookies para autenticação
                 });
 
                 if (!response.ok) {
@@ -48,22 +48,25 @@ const ProductList = ({ product }) => {
 
 
     return (
-        <div>
-            <h1>Product List</h1>
-            <ul id='ListaProduto'>
+        <div id='corpo'>
 
-                {products.map(product => (
-                    <li key={product.id}>
-                        <button id='card-produto' onClick={() => ProdutoCardInfo(product)}>
-                            <img src={product.imagem.urlPrincipal} width={200} />
-                            <h2>{product.nome}</h2>
-                            <p>
-                                Price: ${typeof product.preco === 'number' ? product.preco.toFixed(2) : 'N/A'}
-                            </p>
-                        </button>
-                    </li>
-                ))}
-            </ul>
+            <div id='corpoProdutoLista'>
+
+                <ul id='ListaProduto'>
+
+                    {products.map(product => (
+                        <li key={product.id}>
+                            <button id='card-produto' onClick={() => ProdutoCardInfo(product)}>
+                                <img src={product.imagem.urlPrincipal} id='imgMiniatura' />
+                                <h2>{product.nome}</h2>
+                                <p>
+                                    Price: ${typeof product.preco === 'number' ? product.preco.toFixed(2) : 'N/A'}
+                                </p>
+                            </button>
+                        </li>
+                    ))}
+                </ul>
+            </div>
         </div>
     );
 };

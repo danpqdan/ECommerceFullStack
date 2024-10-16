@@ -14,21 +14,3 @@
     color: black;
 }
 
-
-.NavBarAdmin button {
-    border-radius: 10px;
-    background-color: transparent;
-    height: 30px;
-}
-
-.NavBarAdmin button:active {
-    background-color: bisque;
-    height: 30px;
-}
-
-.NavBarAdmin p {
-    height: 30px;
-    display: flex;
-    align-items: center;
-    justify-items: center;
-}

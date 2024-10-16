@@ -25,10 +25,11 @@
 }
 
 
-nav {
+#NavBar {
 
     background-color: #282c34;
-    min-height: 30px;
+    min-height: 50px;
+
     display: flex;
     justify-content: center;
     border-radius: 5px;
@@ -36,15 +37,26 @@ nav {
     width: 100%;
 }
 
-ul {
+#listNavBar {
     display: flex;
     flex-direction: row;
     gap: 15px;
+    align-items: center;
 
 }
 
-li {
+#itenNavBar {
     color: white;
-    margin: 0 15px;
-    list-style: none;
+    margin: 0px 2px 0px 2px;
+    padding: 5px 10px 5px 10px;
+    border-radius: 10px;
+    background-color: transparent;
+}
+
+#itenNavBar:hover{
+    background-color: rgba(120, 253, 231, 0.753);    
+}
+
+#itenNavBar:active{
+    background-color: rgba(120, 253, 231, 0.753);    
 }

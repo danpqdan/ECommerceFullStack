@@ -8,22 +8,22 @@ import "./CSS/NavBarCss.css"
 function Navbar() {
     return (
         <>
-            <nav>
+            <nav id='NavBar'>
                 <img src={logo} className="App-logo" alt="logo" />
 
-                <ul>
-                    <li>
+                <ul id='listNavBar'>
+                    <button id='itenNavBar'>
                         <Link to="/">Home</Link>
-                    </li>
-                    <li>
+                    </button>
+                    <button id='itenNavBar'>
                         <Link to="/produtos">Produtos</Link>
-                    </li>
-                    <li>
+                    </button>
+                    <button id='itenNavBar'>
                         <Link to="/carrinho">Carrinho</Link>
-                    </li>
-                    <li>
+                    </button>
+                    <button id='itenNavBar'>
                         <Link to="/login">Login</Link>
-                    </li>
+                    </button>
                 </ul>
             </nav>
         </>

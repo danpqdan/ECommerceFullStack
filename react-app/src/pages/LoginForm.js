@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import useFetchData from '../hook/useFetchData';
 import { Navigate, useNavigate } from 'react-router-dom';
 
+import "../components/CSS/logincss.css"
+import RegisterForm from './RegisterForm';
 
 
 const LoginForm = () => {
@@ -10,6 +12,7 @@ const LoginForm = () => {
     const [errors, setErrors] = useState({});
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
+
 
 
 
@@ -72,36 +75,51 @@ const LoginForm = () => {
 
 
     return (
-        <form onSubmit={handleSubmit}>
-            <div>
-                <label htmlFor="username">username:</label>
-                <input
-                    type="username"
-                    id="username"
-                    value={username}
-                    onChange={(e) => setUsername(e.target.value)}
-                />
-                {errors.username && <p className="error">{errors.username}</p>}
-            </div>
+        <div id='bodyDiv'>
 
-            <div>
-                <label htmlFor="password">Password:</label>
-                <input
-                    type="password"
-                    id="password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                />
-                {errors.password && <p className="error">{errors.password}</p>}
-            </div>
+            <form onSubmit={handleSubmit} id='loginForm'>
+                <div className='loginContent'>
 
-            {errors.form && <p className="error">{errors.form}</p>}
+                    <div >
+                        <label htmlFor="username" className='inputLabel'>username</label>
+                        <input
+                            className='inputForm'
+                            type="username"
+                            id="username"
+                            value={username}
+                            onChange={(e) => setUsername(e.target.value)}
+                        />
+                        {errors.username && <p className="error">{errors.username}</p>}
+                    </div>
 
-            <button type="submit" disabled={loading}>
-                {loading ? 'Logging in...' : 'Login'}
-            </button>
-            { }
-        </form>
+                    <div>
+                        <label htmlFor="password" className='inputLabel'>Password</label>
+                        <input
+                            className='inputForm'
+                            type="password"
+                            id="password"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                        />
+                        {errors.password && <p className="error">{errors.password}</p>}
+                    </div>
+
+                    {errors.form && <p className="error">{errors.form}</p>}
+
+                    <div className='contentBtn'>
+
+                        <button type="submit" disabled={loading} id='btnForm'>
+                            {loading ? 'Logging in...' : 'Login'}
+                        </button>
+                        <button id='btnForm' onClick={() => navigate('/register')}>
+                            Registre-se
+                        </button>
+                        
+
+                    </div>
+                </div>
+            </form>
+        </div>
     );
 };
 
