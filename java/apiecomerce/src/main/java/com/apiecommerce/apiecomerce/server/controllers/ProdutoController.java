@@ -1,6 +1,5 @@
 package com.apiecommerce.apiecomerce.server.controllers;
 
-import java.io.IOException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,15 +8,17 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 
+import com.apiecommerce.apiecomerce.server.entities.Categoria;
+import com.apiecommerce.apiecomerce.server.entities.Produto;
 import com.apiecommerce.apiecomerce.server.entities.ServerProduto;
+import com.apiecommerce.apiecomerce.server.entities.data.CategoriaDTO;
 import com.apiecommerce.apiecomerce.server.entities.data.ProdutoDTO;
+import com.apiecommerce.apiecomerce.server.interfaces.CategoriaRepository;
 import com.apiecommerce.apiecomerce.server.interfaces.ProdutoRepository;
+import com.apiecommerce.apiecomerce.server.interfaces.ServerProdutoRepository;
 import com.apiecommerce.apiecomerce.server.services.ProdutoService;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 @RestController
 @RequestMapping("/api")
@@ -26,10 +27,24 @@ public class ProdutoController {
     ProdutoRepository produtoRepository;
     @Autowired
     ProdutoService produtoService;
+    @Autowired
+    CategoriaRepository categoriaRepository;
+    @Autowired
+    ServerProdutoRepository serverProdutoRepository;
 
     @GetMapping("/produtos")
     public List<ServerProduto> listarProduto() {
         return produtoService.listarProduto();
+    }
+
+    @GetMapping("/categoria/produtos")
+    public ResponseEntity<List<ServerProduto>> listarProdutosPorCategoria(@RequestBody CategoriaDTO categoriaDTO) {
+        Categoria categoria = categoriaRepository.findByCategoria(categoriaDTO.getCategoria())
+                .orElseThrow(() -> new RuntimeException("Categoria não encontrada"));
+
+        List<ServerProduto> produtos = serverProdutoRepository.findAllByCategoria(categoria);
+        return ResponseEntity.ok().body(produtos);
+
     }
 
     @PostMapping("/produtoeimagem")

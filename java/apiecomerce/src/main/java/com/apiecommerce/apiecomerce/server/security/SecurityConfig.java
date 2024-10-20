@@ -46,6 +46,8 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/produtos").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/produtos").hasRole("ADMIN")
 
+                        .requestMatchers(HttpMethod.GET, "/api/categoria").permitAll()
+
                         .requestMatchers(HttpMethod.GET, "/api/imagens/carouselhome").permitAll()
 
                         .requestMatchers("/api/sacola/**").permitAll()

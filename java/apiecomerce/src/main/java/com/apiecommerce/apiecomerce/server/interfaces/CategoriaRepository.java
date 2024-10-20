@@ -11,8 +11,10 @@ import com.apiecommerce.apiecomerce.server.entities.Categoria;
 @Repository
 public interface CategoriaRepository extends JpaRepository<Categoria, Long> {
 
+    Optional<List<Categoria>> findAllByCategoria(String categoria);
+
     Optional<Categoria> findByCategoria(String categoria);
 
-    //Optional<List<Categoria>> findAllCategoriaByCategoria(String categoria);
+    // Optional<List<Categoria>> findAllCategoriaByCategoria(String categoria);
 
 }

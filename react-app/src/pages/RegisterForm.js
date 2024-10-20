@@ -14,8 +14,6 @@ const RegisterForm = () => {
         setLoading(true);
         setError('');
 
-
-
         const userData = {
             username,
             password

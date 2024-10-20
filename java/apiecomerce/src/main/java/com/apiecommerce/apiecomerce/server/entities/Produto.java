@@ -14,6 +14,7 @@ import jakarta.persistence.OneToOne;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
 import lombok.Setter;
 
 @Setter
@@ -35,6 +36,10 @@ public abstract class Produto {
     Categoria categoria;
     @OneToOne
     Imagens imagem;
+
+    public void setCategoria(Categoria categoria) {
+        this.categoria = categoria;
+    }
 
     public Produto(Imagens imagens) {
         this.imagem = imagens;

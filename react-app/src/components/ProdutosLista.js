@@ -6,22 +6,17 @@ import BarraDePesquisa from './BarraDePesquisa';
 
 const ProductList = ({ product }) => {
     const [products, setProducts] = useState([]);
+    const [filteredProducts, setFilteredProducts] = useState([]); // Produtos filtrados
+
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const navigate = useNavigate();
 
     useEffect(() => {
         const fetchProducts = async () => {
-            const token = localStorage.getItem('token');
-
             try {
                 const response = await fetch('http://localhost:8080/api/produtos', {
                     method: 'GET',
-                    // headers: {
-                    //     'Authorization': `${token}`,
-                    //     'Content-Type': 'application/json'
-                    // },
-                    // credentials: 'include' // Inclua isso se você estiver usando cookies para autenticação
                 });
 
                 if (!response.ok) {
@@ -29,6 +24,8 @@ const ProductList = ({ product }) => {
                 }
                 const data = await response.json();
                 setProducts(data);
+                setFilteredProducts(data);
+
             } catch (error) {
                 setError(error);
             } finally {
@@ -43,20 +40,60 @@ const ProductList = ({ product }) => {
     if (error) return <p>Error loading products: {error.message}</p>;
 
     const ProdutoCardInfo = (product) => {
-        // Redireciona o usuário e passa o objeto `product` no state
         navigate(`/produto/${product.id}`, { state: { product } });
     };
 
+    const filtrarProdutosPorCategoria = (categoriasSelecionadas) => {
+        const filtrados = products.filter(produto =>
+            categoriasSelecionadas.includes(produto.categoria.categoria)
+        );
+        setFilteredProducts(filtrados);
+    };
+
+    const ordenarProdutos = (criterio) => {
+        console.log("Critério de ordenação:", criterio); // Log do critério de ordenação
+
+        let produtosOrdenados = [...filteredProducts]; // Faz uma cópia dos produtos filtrados
+
+        switch (criterio) {
+            case "priceAsc":
+                produtosOrdenados.sort((a, b) => parseFloat(a.preco) - parseFloat(b.preco));
+                break;
+            case "priceDesc":
+                produtosOrdenados.sort((a, b) => parseFloat(b.preco) - parseFloat(a.preco));
+                break;
+            case "sold":
+                // Supondo que há uma propriedade "vendidos" em cada produto
+                produtosOrdenados.sort((a, b) => b.vendidos - a.vendidos);
+                break;
+            case "newest":
+                // Supondo que há uma propriedade "data" ou "criadoEm" em cada produto
+                produtosOrdenados.sort((a, b) => new Date(b.data) - new Date(a.data));
+                break;
+            default:
+                break;
+        }
+
+        setFilteredProducts(produtosOrdenados); // Atualiza o estado com os produtos ordenados
+    };
+
+    const buscarProdutosPorNome = (nome) => {
+        console.log("Buscando produtos por nome:", nome); // Log para verificar o termo de busca
+        const filtrados = products.filter(produto =>
+            produto.nome.toLowerCase().includes(nome.toLowerCase()) // Faz a busca, ignorando maiúsculas/minúsculas
+        );
+        setFilteredProducts(filtrados.length > 0 ? filtrados : products); // Se nenhum produto encontrado, mostra todos
+    };
 
     return (
         <div id='corpo'>
-            <BarraDePesquisa />
+            <BarraDePesquisa onFiltrar={filtrarProdutosPorCategoria} onOrdenar={ordenarProdutos} onBuscar={buscarProdutosPorNome} />
 
             <div id='corpoProdutoLista'>
 
                 <ul id='ListaProduto'>
 
-                    {products.map(product => (
+                    {filteredProducts.map(product => (
                         <li key={product.id}>
                             <button id='card-produto' onClick={() => ProdutoCardInfo(product)}>
                                 <img src={product.imagem.urlPrincipal} id='imgMiniatura' />
