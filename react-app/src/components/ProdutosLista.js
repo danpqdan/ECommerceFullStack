@@ -1,7 +1,8 @@
 // ProductList.js
-import React, { useState, useEffect } from 'react';
-import './CSS/produtoscss.css'
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import './CSS/produtoscss.css';
+import BarraDePesquisa from './BarraDePesquisa';
 
 const ProductList = ({ product }) => {
     const [products, setProducts] = useState([]);
@@ -49,6 +50,7 @@ const ProductList = ({ product }) => {
 
     return (
         <div id='corpo'>
+            <BarraDePesquisa />
 
             <div id='corpoProdutoLista'>
 
