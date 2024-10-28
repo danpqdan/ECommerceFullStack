@@ -8,10 +8,10 @@ import Carrinho from './pages/Carrinho';
 import Home from './pages/Home';
 import LoginForm from './pages/LoginForm';
 import Produtos from './pages/Produtos';
-import RegisterForm from './pages/RegisterForm';
+import RegisterForm from './pages/RegisterForm';  
+import { useEffect, useState } from 'react';
 
 function App() {
-
   return (
     <Router>
       <div className="App">

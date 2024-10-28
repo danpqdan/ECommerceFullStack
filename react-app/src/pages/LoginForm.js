@@ -4,6 +4,7 @@ import { Navigate, useNavigate } from 'react-router-dom';
 
 import "../components/CSS/logincss.css"
 import RegisterForm from './RegisterForm';
+import Modal from '../components/AlertOverlayer/ModalTest';
 
 
 const LoginForm = () => {
@@ -11,6 +12,11 @@ const LoginForm = () => {
     const [password, setPassword] = useState('');
     const [errors, setErrors] = useState({});
     const [loading, setLoading] = useState(false);
+    const [showModal, setShowModal] = useState(false);
+    const [modalMessage, setModalMessage] = useState('');
+    const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+
     const navigate = useNavigate();
 
 
@@ -58,11 +64,21 @@ const LoginForm = () => {
             const data = await response.json();
             localStorage.setItem('token', data.token);
             localStorage.setItem('role', data.role)
+            localStorage.setItem('user', username)
 
             if (data.role === 'role_admin') {
-                navigate('/paineladmin'); // Redireciona para a página do admin
+                setIsAuthenticated(true);
+                setShowModal(true);
+                navigate('/paineladmin')
+                setModalMessage("Login realizado com sucesso")
+                window.location.reload();
+
             } else {
-                navigate('/carrinho'); // Redireciona para a página do usuário comum
+                setIsAuthenticated(true);
+                setShowModal(true);
+                navigate('/carrinho')
+                setModalMessage("Login realizado com sucesso")
+                window.location.reload();
             }
 
         } catch (error) {
@@ -114,11 +130,20 @@ const LoginForm = () => {
                         <button id='btnForm' onClick={() => navigate('/register')}>
                             Registre-se
                         </button>
-                        
+
 
                     </div>
                 </div>
             </form>
+
+            {showModal && (
+                <Modal
+                    message={isAuthenticated ? modalMessage : "Você foi desconectado"}
+                    onClose={() => setShowModal(false)}
+                />
+            )}
+
+
         </div>
     );
 };
