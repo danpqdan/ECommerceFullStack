@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './CSS/produtoscss.css';
 import BarraDePesquisa from './BarraDePesquisa';
+import { fetchProdutosComCache } from '../hook/produtosEmCache';
 
 const ProductList = ({ product }) => {
     const [products, setProducts] = useState([]);
@@ -15,14 +16,7 @@ const ProductList = ({ product }) => {
     useEffect(() => {
         const fetchProducts = async () => {
             try {
-                const response = await fetch('http://localhost:8080/api/produtos', {
-                    method: 'GET',
-                });
-
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                const data = await response.json();
+                const data = await fetchProdutosComCache();
                 setProducts(data);
                 setFilteredProducts(data);
 

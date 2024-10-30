@@ -65,6 +65,7 @@ const LoginForm = () => {
             localStorage.setItem('token', data.token);
             localStorage.setItem('role', data.role)
             localStorage.setItem('user', username)
+            
 
             if (data.role === 'role_admin') {
                 setIsAuthenticated(true);

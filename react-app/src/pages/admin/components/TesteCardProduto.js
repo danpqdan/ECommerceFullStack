@@ -58,6 +58,7 @@ const TesteCardProduto = ({ nomeDoProduto, descricao, preco, quantidadeEmEstoque
                 <p>Preço: ${precoFormatado}</p>
                 <p>Categoria: {categoria.categoria}</p>
             </div>
+            
         </div>
     );
 }

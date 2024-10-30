@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-
+import { fetchProdutosComCache } from '../../../hook/produtosEmCache'
 
 const ListarProduto = ({ product }) => {
     const [products, setProducts] = useState([]);
@@ -17,23 +17,11 @@ const ListarProduto = ({ product }) => {
 
     useEffect(() => {
         const fetchProducts = async () => {
-            const token = localStorage.getItem('token');
 
             try {
-                const response = await fetch('http://localhost:8080/api/produtos', {
-                    method: 'GET',
-                    headers: {
-                        'Authorization': `${token}`,
-                        'Content-Type': 'application/json'
-                    },
-                    credentials: 'include'
-                });
-
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                const data = await response.json();
+                const data = await fetchProdutosComCache();
                 setProducts(data);
+
             } catch (error) {
                 setError(error);
             } finally {
