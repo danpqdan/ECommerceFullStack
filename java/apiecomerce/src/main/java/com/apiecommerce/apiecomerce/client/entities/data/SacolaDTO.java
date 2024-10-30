@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.apiecommerce.apiecomerce.server.entities.Produto;
+import com.apiecommerce.apiecomerce.server.entities.data.LoginResponseDTO;
 import com.apiecommerce.apiecomerce.server.interfaces.ProdutoRepository;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
@@ -16,16 +17,10 @@ import lombok.Setter;
 
 @AllArgsConstructor
 @NoArgsConstructor
+@Getter
+@Setter
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class SacolaDTO {
-    AuthenticationDTO login;
-
-    public AuthenticationDTO getLogin() {
-        return login;
-    }
-
-    public void setLogin(AuthenticationDTO login) {
-        this.login = login;
-    }
+    LoginResponseDTO login;
 
 }

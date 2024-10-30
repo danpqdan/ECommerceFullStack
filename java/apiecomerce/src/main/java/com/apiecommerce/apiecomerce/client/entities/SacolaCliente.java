@@ -32,15 +32,15 @@ public class SacolaCliente extends SacolaServer {
     String payment_method_id;
     String payment_type_id;
     String date_approved;
-    Double valorFinal;
+    Double valorFinalSacola;
 
-    @JsonBackReference
-    @OneToMany(mappedBy = "sacola", cascade = CascadeType.MERGE, orphanRemoval = true, fetch = FetchType.LAZY)
+    // @JsonBackReference
+    @OneToMany(mappedBy = "sacola", cascade = CascadeType.MERGE, orphanRemoval = true)
     List<ClienteProduto> clienteProduto = new ArrayList<>();
 
     public SacolaCliente(Long id, Usuario usuario, Double valorFinal, EstadoDaCompra estadoDaCompra) {
         super(id, usuario, valorFinal, estadoDaCompra);
-        super.setValorFinal(this.valorFinal);
+        super.setValorFinal(this.getValorFinal());
     }
 
     public SacolaCliente(Usuario usuario) {
@@ -55,7 +55,8 @@ public class SacolaCliente extends SacolaServer {
         for (ClienteProduto clienteProduto : clienteProdutos) {
             valorPorProduto += clienteProduto.getValorTotalDeProduto();
         }
-        this.valorFinal = valorPorProduto;
+        this.valorFinalSacola = valorPorProduto;
+        this.transaction_amount = valorPorProduto;
     }
 
 }

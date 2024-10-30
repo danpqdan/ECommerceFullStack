@@ -13,8 +13,10 @@ import com.apiecommerce.apiecomerce.client.entities.data.SacolaDTO;
 import com.apiecommerce.apiecomerce.client.repositories.ClienteProdutoRepository;
 import com.apiecommerce.apiecomerce.client.repositories.ClienteSacolaRepository;
 import com.apiecommerce.apiecomerce.server.entities.EstadoDaCompra;
+import com.apiecommerce.apiecomerce.server.entities.Produto;
 import com.apiecommerce.apiecomerce.server.entities.SacolaServer;
 import com.apiecommerce.apiecomerce.server.entities.Usuario;
+import com.apiecommerce.apiecomerce.server.entities.data.LoginResponseDTO;
 import com.apiecommerce.apiecomerce.server.interfaces.ProdutoRepository;
 import com.apiecommerce.apiecomerce.server.interfaces.SacolaRepository;
 import com.apiecommerce.apiecomerce.server.interfaces.UsuarioRepository;
@@ -40,18 +42,21 @@ public class ClienteSacolaService {
     @Autowired
     SacolaService sacolaService;
 
-    public SacolaServer retornarSacola(AuthenticationDTO login) {
+    public SacolaServer retornarSacola(LoginResponseDTO login) {
         Usuario usuario = userDetailsService.validarUsuario(login);
         SacolaServer sacola = sacolaRepository.findByUsuarioId(usuario.getId());
         return sacola;
     }
 
-    public SacolaCliente transformaSacolaEmSacolaCliente(AuthenticationDTO login) {
+    public SacolaCliente transformaSacolaEmSacolaCliente(LoginResponseDTO login) {
         SacolaServer sacola = retornarSacola(login);
         SacolaCliente sacolaCliente = new SacolaCliente();
         sacolaCliente.setId(sacola.getId());
         sacolaCliente.setEstadoDaCompra(sacola.getEstadoDaCompra());
         sacolaCliente.setUsuario(sacola.getUsuario());
+        List<ClienteProduto> produto = clienteProdutoRepository.encontreTodosOsClienteProdutoPorId(sacola.getId());
+        sacolaCliente.setClienteProduto(produto);
+        sacolaCliente.setValorFinal(produto);
         clienteSacolaRepository.save(sacolaCliente);
         return sacolaCliente;
     }
@@ -64,16 +69,17 @@ public class ClienteSacolaService {
             clienteProduto2.get(i).setSacola(sacola);
         }
         sacola.getClienteProduto().addAll(clienteProduto2);
+        sacola.setValorFinal(sacola.getClienteProduto());
+        //sacolaService.valorFinal(clienteProduto);
         sacola.setValorFinal(clienteProduto2);
-        sacolaService.valorFinal(clienteProduto);
         clienteProdutoRepository.saveAllAndFlush(clienteProduto2);
         clienteSacolaRepository.saveAndFlush(sacola);
         return clienteProduto2;
     }
 
-    public String finalizarSacola(SacolaDTO sacolaDTO) {
-        SacolaServer sacola = retornarSacola(sacolaDTO.getLogin());
-        Usuario usuario = userDetailsService.validarUsuario(sacolaDTO.getLogin());
+    public String finalizarSacola(LoginResponseDTO sacolaDTO) {
+        SacolaServer sacola = retornarSacola(sacolaDTO);
+        Usuario usuario = userDetailsService.validarUsuario(sacolaDTO);
         if (sacola.getEstadoDaCompra() != EstadoDaCompra.APROVADA) {
             return "Sacola ainda não finalizada";
         } else {

@@ -7,10 +7,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestHeader;
 
 import com.apiecommerce.apiecomerce.client.entities.SacolaCliente;
 import com.apiecommerce.apiecomerce.client.entities.data.AuthenticationDTO;
@@ -41,7 +39,7 @@ public class CustomUserDetailsService implements UserDetailsService {
         var auth = this.authenticationManager.authenticate(usernamePassword);
         var token = tokenService.generatedToken((Usuario) auth.getPrincipal());
         var tokeRole = tokenService.extractUserRoles(token);
-        return new LoginResponseDTO(token, tokeRole);
+        return new LoginResponseDTO(token, tokeRole, login.getUsername());
 
     }
 
@@ -79,28 +77,28 @@ public class CustomUserDetailsService implements UserDetailsService {
         return usuarioRepository.findByUsername(username);
     }
 
-    public UserDetails validarUsuarioPorToken(String token, AuthenticationDTO login) {
+    public UserDetails validarUsuarioPorToken(String token, LoginResponseDTO login) {
         var userToken = tokenService.extrairUsuario(token);
         var usuario = validarUsuario(login);
         if (userToken.equals(usuario.getUsername())) {
-            var user = loadUserByUsername(login.getUsername());
+            var user = loadUserByUsername(login.username());
             return user;
         }
         return null;
     }
 
-    public Usuario validarUsuario(AuthenticationDTO login)
+    public Usuario validarUsuario(LoginResponseDTO login)
             throws UsernameNotFoundException {
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-        var usuario = usuarioRepository.findByUsername(login.getUsername());
-        if (usuario.getUsername().equals(login.getUsername())
-                && passwordEncoder.matches(login.getPassword(), usuario.getPassword())) {
-            return usuarioRepository.encontrarByUsername(login.getUsername());
+        var usuario = usuarioRepository.findByUsername(login.username());
+        if (usuario.getUsername().equals(login.username())
+                && passwordEncoder.matches(login.username(), usuario.getPassword())) {
+            return usuarioRepository.encontrarByUsername(login.username());
         }
         return null;
     }
 
-    public boolean testeUsuario(AuthenticationDTO login) {
+    public boolean testeUsuario(LoginResponseDTO login) {
         boolean teste = true;
         var a = validarUsuario(login);
         if (a == null) {

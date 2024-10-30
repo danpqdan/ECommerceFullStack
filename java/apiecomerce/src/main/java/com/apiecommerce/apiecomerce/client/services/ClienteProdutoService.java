@@ -15,6 +15,7 @@ import com.apiecommerce.apiecomerce.client.entities.data.ClienteSacolaDTO;
 import com.apiecommerce.apiecomerce.client.repositories.ClienteProdutoRepository;
 import com.apiecommerce.apiecomerce.client.repositories.ClienteSacolaRepository;
 import com.apiecommerce.apiecomerce.server.entities.Produto;
+import com.apiecommerce.apiecomerce.server.entities.data.LoginResponseDTO;
 import com.apiecommerce.apiecomerce.server.interfaces.ProdutoRepository;
 import com.apiecommerce.apiecomerce.server.services.CustomUserDetailsService;
 import com.apiecommerce.apiecomerce.server.services.ProdutoService;
@@ -32,8 +33,8 @@ public class ClienteProdutoService {
     @Autowired
     CustomUserDetailsService userDetailsService;
 
-    public List<ClienteProduto> retornarProdutos(AuthenticationDTO authenticationDTO) {
-        var usuario = userDetailsService.validarUsuario(authenticationDTO);
+    public List<ClienteProduto> retornarProdutos(LoginResponseDTO login) {
+        var usuario = userDetailsService.validarUsuario(login);
         return clienteProdutoRepository
                 .encontreTodosOsClienteProdutoPorId(usuario.getSacola().getId());
     }

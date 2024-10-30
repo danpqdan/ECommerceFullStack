@@ -20,9 +20,9 @@ public class ClienteController {
     @Autowired
     ClienteSacolaService clienteSacolaService;
 
-    @GetMapping
+    @PostMapping
     public ResponseEntity retornarSacola(@RequestBody SacolaDTO dto) {
-        return ResponseEntity.ok().body(clienteSacolaService.retornarSacola(dto.getLogin()));
+        return ResponseEntity.ok().body(clienteSacolaService.transformaSacolaEmSacolaCliente(dto.getLogin()));
     }
 
     @PostMapping("/sacola")
@@ -33,7 +33,7 @@ public class ClienteController {
 
     @PostMapping("/sacola/finalizar")
     public ResponseEntity sacolaPaga(@RequestBody SacolaDTO sacola) {
-        return ResponseEntity.ok().body(clienteSacolaService.finalizarSacola(sacola));
+        return ResponseEntity.ok().body(clienteSacolaService.finalizarSacola(sacola.getLogin()));
     }
 
 }

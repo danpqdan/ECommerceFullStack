@@ -1,5 +1,9 @@
 package com.apiecommerce.apiecomerce.server.entities;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import com.apiecommerce.apiecomerce.client.entities.ClienteProduto;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.Entity;

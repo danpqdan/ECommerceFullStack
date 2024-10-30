@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.UUID;
 
 import com.apiecommerce.apiecomerce.server.entities.Produto;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -32,6 +33,7 @@ public class ClienteProduto {
 
     int quantidadeProduto;
     double valorTotalDeProduto;
+    @JsonBackReference
     @ManyToOne(fetch = FetchType.LAZY)
     SacolaCliente sacola;
 
