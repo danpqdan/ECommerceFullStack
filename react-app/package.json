@@ -21,12 +21,12 @@
   },
   "scripts": {
     "predeploy": "npm run build",
-    "deploy": "gh-pages -d build",
+    "deploy": "gh-pages -d build -r https://github.com/danpqdan/ECommerceFullStack.git",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "homepage": "https://danpqdan.github.io/ECommerceFullStack/react-app"
+    "homepage": "https://danpqdan.github.io/ECommerceFullStack"
   },
   "eslintConfig": {
     "extends": [
