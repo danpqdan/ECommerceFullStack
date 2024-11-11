@@ -1,13 +1,14 @@
 import { useEffect, useState } from 'react';
 import { Swiper, SwiperSlide, useSwiper } from 'swiper/react';
-import '../styles/carouselhomecss.css';
+import '../styles/carouselhomecss.css'
+import 'swiper/swiper-bundle.css';
 
 const SlideNextButton = () => {
     const swiper = useSwiper();
 
     return (
-        <button onClick={() => swiper.slideNext()} className="swiper-button-next">
-            <>1'</>
+        <button onClick={() => swiper.slideNext()} className='button-next'>
+
         </button>
     );
 };
@@ -16,8 +17,8 @@ const SlidePrevButton = () => {
     const swiper = useSwiper();
 
     return (
-        <button onClick={() => swiper.slidePrev()} className="swiper-button-prev">
-            <>1'</>
+        <button onClick={() => swiper.slidePrev()} className="button-prev">
+
         </button>
     );
 };
@@ -29,12 +30,12 @@ const CarrouselHome = () => {
     useEffect(() => {
         const fetchImages = async () => {
             try {
-                const response = await fetch('https://placehold.co/600x400'); // Exemplo de URL de imagens
+                const response = await fetch('https://placehold.co/600x400');
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
                 }
                 // Usando imagens geradas aleatoriamente como exemplo
-                const data = Array(5).fill('https://placehold.co/600x400'); // Exemplo de múltiplas imagens
+                const data = Array(5).fill('https://placehold.co/600x400');
                 setImages(data);
             } catch (error) {
                 console.error('Erro ao buscar imagens:', error);

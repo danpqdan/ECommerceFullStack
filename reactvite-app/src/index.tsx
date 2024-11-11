@@ -1,14 +1,13 @@
 
+import { Children } from 'react';
 import styled, { createGlobalStyle, css } from 'styled-components';
 
 export const colors = {
   blue: '#CEF2F2',
-  darkGreen: '#274001',
-  smallGreen: '#076b0c',
-  lightGreen: '#31a531',
-  pale: '#D9B596',
+  paleBlue: '#0ed8d8',
+  darkBlue: '#2a4f86',
   darkText: '#000000',
-  lightText: '#73d3d3'
+  lightText: '#cae2e2'
 };
 
 
@@ -42,11 +41,14 @@ interface ResponsiveBoxProps {
 }
 
 export const ResponsiveBox = styled.div<ResponsiveBoxProps>`
-  width: ${(props) => (props.width > 768 ? '90vw' : '96vw')};
-  height: ${(props) => `calc(${props.height}px - 50px)`}; 
-  background-color: ${(props) => (props.width > 800 ? '#3498db' : '#2ecc71')};
+  width: ${(props) => (props.width > 768 ? '90vw' : '100%')};
+  height: ${(props) => `calc(${props.height}px + ${Children}px)`}; 
+  background-color: ${(props) => (props.width > 800 ? colors.darkBlue : colors.darkBlue)};
   transition: all 0.3s ease;
   margin: 0 auto;
+  box-shadow: 0px 4px 16px rgba(0, 0, 0, 1), 0px 8px 8px rgba(255, 255, 255, 1);
+  border-radius: 6px;
+
 `;
 
 
@@ -64,9 +66,10 @@ export const GlobalStyle = createGlobalStyle`
   body {
     font-family: "Space Grotesk", sans-serif;
     font-weight: 100;
-    background-color: ${colors.lightGreen};
+    background-color: ${colors.paleBlue};
     color: ${colors.darkText};
     line-height: 1.5;
+    overflow-x: hidden;
   }
 
   a, Link ,p{
@@ -128,7 +131,7 @@ export const GlobalStyle = createGlobalStyle`
   padding: 6px 8px;
   border-radius: 4px;
   border: 0.05px solid ${colors.lightText};
-  overflow: hidden; /* Garantir que o efeito não saia do botão */
+  overflow: hidden; 
 }
 
 .main-button::after {

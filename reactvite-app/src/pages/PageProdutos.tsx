@@ -2,7 +2,7 @@ import { ProductList } from '../components/ProductList';
 import { useWindowSize } from '../hooks/useWindowsSize';
 import { ResponsiveBox } from '../index';
 
-const Produtos = () => {
+export const PageProdutos = () => {
     const { width = 0, height = 0 } = useWindowSize();
 
     return (
@@ -11,5 +11,3 @@ const Produtos = () => {
         </ResponsiveBox>
     );
 }
-
-export default Produtos;
