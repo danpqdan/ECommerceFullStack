@@ -2,19 +2,16 @@
 FROM node:18-alpine AS build
 
 WORKDIR /reactvite-app
-COPY package*.json ./
+COPY ./reactvite-app/package*.json ./ 
 RUN npm install
 RUN npm install styled-components react-router-dom swiper
-COPY . .
+COPY ./reactvite-app . 
 RUN npm run build
 
-# Etapa de produção
+
 FROM nginx:alpine
 
-# Copia os arquivos da build para o diretório do nginx
 COPY --from=build /reactvite-app/build /usr/share/nginx/html
-
-# Expondo a porta do nginx
 EXPOSE 80
 
 CMD ["nginx", "-g", "daemon off;"]

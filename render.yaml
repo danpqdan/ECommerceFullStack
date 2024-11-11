@@ -9,10 +9,10 @@ services:
     envVars:
       - key: NODE_ENV
         sync: false
-      
     region: oregon
     dockerContext: .
     dockerfilePath: /reactvite-app/Dockerfile
+    
   - type: web
     name: backend
     runtime: docker
