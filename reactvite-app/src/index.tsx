@@ -1,8 +1,6 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-import styled, { createGlobalStyle, css } from 'styled-components';
-import { useWindowSize } from './hooks/useWindowsSize';
 
-// Variáveis de cor e tamanhos de fonte
+import styled, { createGlobalStyle, css } from 'styled-components';
+
 export const colors = {
   blue: '#CEF2F2',
   darkGreen: '#274001',

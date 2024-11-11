@@ -1,9 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { NavbarWrapper, ListNavBar, NavItem } from '../styles/navbar.styled.components';  // Importação correta
+import { useWindowSize, WindowSize } from '../hooks/useWindowsSize';
+import { ListNavBar, NavbarWrapper, NavItem } from '../styles/navbar.styled.components'; // Importação correta
 
+const Navbar: React.FC<WindowSize> = () => {
+    const { width = 0, height = 0 } = useWindowSize();
 
-function Navbar({ width, height }) {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     // const [showModal, setShowModal] = useState(false);
     const [user, setUsername] = useState<string | null>();
@@ -13,7 +15,7 @@ function Navbar({ width, height }) {
     useEffect(() => {
         // Verifica se existe um token de autenticação no localStorage
         const token = localStorage.getItem('token');
-        const role = localStorage.getItem('role');
+        // const role = localStorage.getItem('role');
         const user = localStorage.getItem('user');
         setUsername(user);
         setIsAuthenticated(!!token);

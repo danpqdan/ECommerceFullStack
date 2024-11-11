@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 
 // Tipos para o estado do tamanho da janela
-interface WindowSize {
+export interface WindowSize {
     width: number | undefined;
     height: number | undefined;
 }

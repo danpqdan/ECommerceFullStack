@@ -1,33 +1,41 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
+import UseCategorias, { Categoria } from '../hooks/useCategorias';
 
-const BarraDePesquisa = ({ onFiltrar, onOrdenar, onBuscar }) => {
+export interface BarraDePesquisaProps {
+    onFiltrar: (categoriasSelecionadas: string[]) => void;
+    onOrdenar: (criterio: string) => void;
+    onBuscar: (nome: string) => void;
+}
+
+const BarraDePesquisa: React.FC<BarraDePesquisaProps> = ({ onFiltrar, onOrdenar, onBuscar }) => {
+    const categorias: Categoria[] = UseCategorias();  
+    
     const [categoriasSelecionadas, setCategoriasSelecionadas] = useState<string[]>([]);
-    const [categorias, setCategorias] = useState<string[]>();
-    const [ordenacaoSelecionada, setOrdenacaoSelecionada] = useState("");
-    const [termoBusca, setTermoBusca] = useState("");
-    const [isVisible, setIsVisible] = useState(false);
+    const [ordenacaoSelecionada, setOrdenacaoSelecionada] = useState<string>("");
+    const [termoBusca, setTermoBusca] = useState<string>("");
+    const [isVisible, setIsVisible] = useState<boolean>(false);
 
     const toggleOverlay = () => {
-        setIsVisible(!isVisible); // Alterna a visibilidade da sobreposição
+        setIsVisible(!isVisible); 
     };
 
-    const handleInputChange = (event) => {
+    const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setTermoBusca(event.target.value);
     };
 
-    const handleBuscarPorNome = (event) => {
+    const handleBuscarPorNome = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         onBuscar(termoBusca);
-        setTermoBusca(""); // Limpa o termo de busca após a pesquisa
+        setTermoBusca(""); 
     };
 
-    const handleOrdenarChange = (event) => {
+    const handleOrdenarChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
         const valorOrdenacao = event.target.value;
         setOrdenacaoSelecionada(valorOrdenacao);
-        onOrdenar(valorOrdenacao); // Chama a função de ordenação passada por props
+        onOrdenar(valorOrdenacao);
     };
 
-    const handleCheckboxChange = (event) => {
+    const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const { value, checked } = event.target;
         setCategoriasSelecionadas(prevState =>
             checked
@@ -38,32 +46,9 @@ const BarraDePesquisa = ({ onFiltrar, onOrdenar, onBuscar }) => {
 
     const handleBuscar = () => {
         onFiltrar(categoriasSelecionadas);
-        setCategoriasSelecionadas([]); // Limpa as categorias selecionadas
-        toggleOverlay(); // Fecha o overlay
+        setCategoriasSelecionadas([]); 
+        toggleOverlay(); 
     };
-
-    useEffect(() => {
-        const fetchCategorias = async () => {
-            try {
-                const response = await fetch('http://localhost:8080/api/categoria', { method: 'GET' });
-
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-
-                const data = await response.json();
-                if (Array.isArray(data)) {
-                    setCategorias(data);
-                } else {
-                    console.error('Dados de categorias inválidos');
-                }
-            } catch (error) {
-                console.error('Erro ao buscar categorias', error);
-            }
-        };
-
-        fetchCategorias();
-    }, []);
 
     return (
         <nav id='contentNav'>
@@ -75,11 +60,8 @@ const BarraDePesquisa = ({ onFiltrar, onOrdenar, onBuscar }) => {
                     value={termoBusca}
                     onChange={handleInputChange}
                 />
+                <button type="submit" id='btnSearch'>Buscar</button>
             </form>
-
-            <button type='submit' id='btnSearch' onClick={handleBuscarPorNome}>
-                Buscar
-            </button>
 
             <div>
                 <label htmlFor="sort">Ordenar por: </label>

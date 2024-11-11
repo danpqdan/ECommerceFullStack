@@ -1,7 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Swiper, SwiperSlide, useSwiper } from 'swiper/react';
-import 'swiper/css';
-import 'swiper/less';
 import '../styles/carouselhomecss.css';
 
 const SlideNextButton = () => {
@@ -25,7 +23,7 @@ const SlidePrevButton = () => {
 };
 
 const CarrouselHome = () => {
-    const [images, setImages] = useState([]);
+    const [images, setImages] = useState<string[]>([]);
 
 
     useEffect(() => {
@@ -53,7 +51,6 @@ const CarrouselHome = () => {
                 slidesPerView={1}
                 pagination={{ clickable: true }}
                 navigation={{
-                    clickable: true,
                     prevEl: '.swiper-button-prev',
                     nextEl: '.swiper-button-next',
                 }}

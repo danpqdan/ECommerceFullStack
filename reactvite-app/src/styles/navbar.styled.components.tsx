@@ -1,9 +1,9 @@
 import styled from 'styled-components';
-import { colors, fontSizes, flexCenter, GlobalStyle } from '../index';
+import { colors } from '../index';
 
 interface ResponsiveBoxProps {
-    width: number;
-    height: number;
+  width: number;
+  height: number;
 }
 
 export const NavbarWrapper = styled.nav<ResponsiveBoxProps>`

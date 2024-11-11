@@ -1,11 +1,11 @@
 
 
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Navbar from "./components/navbar";
-import Home from "./pages/home";
-import Produtos from "./pages/Produtos";
+import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
+import Navbar from "./components/Navbar";
 import Carrinho from "./pages/Carrinho";
+import Home from "./pages/Home";
 import LoginForm from "./pages/LoginForm";
+import Produtos from "./pages/Produtos";
 // import ProdutoCard from './components/ProdutoCard';
 // import PainelAdmin from './pages/admin/PainelAdmin';
 // import Carrinho from './pages/Carrinho';
@@ -15,9 +15,9 @@ import LoginForm from "./pages/LoginForm";
 // import RegisterForm from './pages/RegisterForm';
 // import { useEffect, useState } from 'react';
 
-import Carrousel from './components/Carrosel'
-import { ResponsiveBox } from './index'
+import Carrousel from './components/Carrosel';
 import { useWindowSize } from "./hooks/useWindowsSize";
+import { ResponsiveBox } from './index';
 
 function App() {
   const { width = 0, height = 0 } = useWindowSize();

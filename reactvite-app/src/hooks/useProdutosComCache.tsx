@@ -2,6 +2,21 @@
 const CACHE_KEY = 'produtos_cache';
 const CACHE_DURATION = 60 * 60 * 1000; // 1 hora
 
+export interface ProdutoCardInfoProps {
+    id: string;
+    nome: string;
+    imagem: {
+        urlPrincipal: string;
+    };
+    preco: string | number;
+    vendidos: number;
+    data: string;
+    categoria: {
+        categoria: string;
+    };
+}
+
+
 export const fetchProdutosComCache = async () => {
     const cache = localStorage.getItem(CACHE_KEY);
     const timestamp = localStorage.getItem(`${CACHE_KEY}_timestamp`);
@@ -12,7 +27,7 @@ export const fetchProdutosComCache = async () => {
     }
 
     try {
-        const response = await fetch('http://localhost:8080/api/produtos');
+        const response = await fetch('https://ecommercefullstack-vdce.onrender.com/api/produtos');
         if (!response.ok) {
             throw new Error(`Erro HTTP! status: ${response.status}`);
         }
