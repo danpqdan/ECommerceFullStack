@@ -4,7 +4,6 @@ services:
     env: docker
     plan: free
     buildCommand: "npm install node styled-components && npm run build"
-    startCommand: "npm start"
     dockerfilePath: ./reactvite-app
     envVars:
       - key: NODE_ENV
@@ -15,5 +14,4 @@ services:
     env: docker
     plan: free
     buildCommand: "./mvnw clean package"
-    startCommand: "java -jar target/myapp.jar"
     dockerfilePath: ./java/apiecomerce
