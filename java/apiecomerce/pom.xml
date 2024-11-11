@@ -129,12 +129,12 @@
 			<artifactId>spring-security-test</artifactId>
 			<scope>test</scope>
 		</dependency>
-
 		<dependency>
 			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>
-			<scope>runtime</scope>
+			<version>42.2.20</version> <!-- Ou a versão mais recente compatível -->
 		</dependency>
+
 	</dependencies>
 
 	<build>
