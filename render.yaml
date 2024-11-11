@@ -9,6 +9,7 @@ services:
     envVars:
       - key: NODE_ENV
         sync: false
+      
     region: oregon
     dockerContext: .
     dockerfilePath: /reactvite-app/Dockerfile
@@ -21,4 +22,9 @@ services:
     region: oregon
     dockerContext: .
     dockerfilePath: /java/apiecomerce/Dockerfile
+    envVars:
+      - fromGroup: EnvECommerce 
+
+
+
 version: "1"
