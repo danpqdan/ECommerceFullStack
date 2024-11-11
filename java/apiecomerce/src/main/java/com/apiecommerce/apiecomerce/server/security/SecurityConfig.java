@@ -1,6 +1,7 @@
 package com.apiecommerce.apiecomerce.server.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -23,6 +24,11 @@ public class SecurityConfig {
     @Autowired
     SecurityFilter securityFilter;
 
+    @Value("${api.security.route.prod}")
+    private String secretProd;
+    @Value("${api.security.route.dev}")
+    private String secretDev;
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         return httpSecurity
@@ -30,7 +36,8 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .cors(cors -> cors.configurationSource(request -> {
                     var corsConfiguration = new CorsConfiguration();
-                    corsConfiguration.addAllowedOrigin("http://localhost:3000");
+                    corsConfiguration.addAllowedOrigin(secretProd);
+                    corsConfiguration.addAllowedHeader(secretDev);
                     corsConfiguration.addAllowedHeader("webhook/**");
                     corsConfiguration.addAllowedMethod("*"); // Permitir todos os métodos HTTP
                     corsConfiguration.addAllowedHeader("*"); // Permitir todos os cabeçalhos
@@ -48,13 +55,11 @@ public class SecurityConfig {
 
                         .requestMatchers(HttpMethod.GET, "/api/categoria").permitAll()
 
-                        .requestMatchers(HttpMethod.GET, "/api/imagens/carouselhome").permitAll()
-
                         .requestMatchers("/api/sacola/**").permitAll()
 
                         .requestMatchers(HttpMethod.POST, "api/mercadopago").permitAll()
 
-                        .requestMatchers("swagger-ui/**", "/v3/api-docs/**").permitAll()
+                        .requestMatchers("swagger-ui/**", "/v3/api-docs/**", "/doc").permitAll()
                         .anyRequest().authenticated())
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
