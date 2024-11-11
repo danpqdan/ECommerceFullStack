@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.apiecommerce.apiecomerce.server.entities.Categoria;
-import com.apiecommerce.apiecomerce.server.entities.Produto;
 import com.apiecommerce.apiecomerce.server.entities.ServerProduto;
 import com.apiecommerce.apiecomerce.server.entities.data.CategoriaDTO;
 import com.apiecommerce.apiecomerce.server.entities.data.ProdutoDTO;

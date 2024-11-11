@@ -3,16 +3,13 @@ package com.apiecommerce.apiecomerce.server.services;
 import java.io.IOException;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import com.apiecommerce.apiecomerce.client.entities.data.AuthenticationDTO;
 import com.apiecommerce.apiecomerce.server.entities.Usuario;
-import com.apiecommerce.apiecomerce.server.entities.data.LoginResponseDTO;
 import com.apiecommerce.apiecomerce.server.interfaces.UsuarioRepository;
 
 import jakarta.servlet.FilterChain;

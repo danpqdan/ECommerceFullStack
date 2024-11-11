@@ -3,17 +3,11 @@ package com.apiecommerce.apiecomerce.server.services;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
-import org.hibernate.annotations.Any;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
-import com.apiecommerce.apiecomerce.client.entities.ClienteProduto;
-import com.apiecommerce.apiecomerce.client.entities.data.ClienteSacolaDTO;
-import com.apiecommerce.apiecomerce.client.entities.data.SacolaDTO;
 import com.apiecommerce.apiecomerce.server.entities.Categoria;
 import com.apiecommerce.apiecomerce.server.entities.Imagens;
 import com.apiecommerce.apiecomerce.server.entities.Produto;

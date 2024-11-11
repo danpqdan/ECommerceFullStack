@@ -1,8 +1,5 @@
 package com.apiecommerce.apiecomerce.client.entities;
 
-import java.util.List;
-import java.util.UUID;
-
 import com.apiecommerce.apiecomerce.server.entities.Produto;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
@@ -13,6 +10,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -20,6 +18,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @AllArgsConstructor
+@Table(name = "produto_cliente")
 @Entity(name = "produto_cliente")
 public class ClienteProduto {
 

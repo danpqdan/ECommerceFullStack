@@ -1,13 +1,6 @@
 package com.apiecommerce.apiecomerce.client.entities.data;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
-
-import com.apiecommerce.apiecomerce.server.entities.Produto;
 import com.apiecommerce.apiecomerce.server.entities.data.LoginResponseDTO;
-import com.apiecommerce.apiecomerce.server.interfaces.ProdutoRepository;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import lombok.AllArgsConstructor;

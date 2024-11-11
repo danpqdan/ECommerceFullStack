@@ -6,17 +6,18 @@ import java.util.List;
 import com.apiecommerce.apiecomerce.server.entities.EstadoDaCompra;
 import com.apiecommerce.apiecomerce.server.entities.SacolaServer;
 import com.apiecommerce.apiecomerce.server.entities.Usuario;
-import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+
+@Table(name = "sacola_cliente")
 @Entity(name = "sacola_cliente")
 @Setter
 @Getter

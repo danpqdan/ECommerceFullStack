@@ -1,13 +1,7 @@
 package com.apiecommerce.apiecomerce.server.entities.data;
 
-import org.springframework.beans.factory.annotation.Autowired;
-
-import com.apiecommerce.apiecomerce.server.entities.Categoria;
-import com.apiecommerce.apiecomerce.server.interfaces.ProdutoRepository;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.OneToMany;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

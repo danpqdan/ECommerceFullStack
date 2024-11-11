@@ -36,13 +36,13 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .cors(cors -> cors.configurationSource(request -> {
                     var corsConfiguration = new CorsConfiguration();
-                    corsConfiguration.addAllowedOrigin(secretProd);
-                    corsConfiguration.addAllowedHeader(secretDev);
-                    corsConfiguration.addAllowedHeader("webhook/**");
-                    corsConfiguration.addAllowedMethod("*"); // Permitir todos os métodos HTTP
-                    corsConfiguration.addAllowedHeader("*"); // Permitir todos os cabeçalhos
-                    corsConfiguration.setAllowCredentials(true); // Permitir envio de cookies e cabeçalhos de
-                                                                 // autenticação
+                    corsConfiguration.addAllowedOriginPattern(secretProd);
+                    corsConfiguration.addAllowedOriginPattern(secretDev);
+                    corsConfiguration.addAllowedHeader("*");
+                    corsConfiguration.addAllowedMethod("*");
+                    corsConfiguration.addAllowedHeader("*");
+                    corsConfiguration.setAllowCredentials(true);
+
                     return corsConfiguration;
                 }))
                 .authorizeHttpRequests(authorize -> authorize

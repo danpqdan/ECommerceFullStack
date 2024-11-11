@@ -1,7 +1,6 @@
 package com.apiecommerce.apiecomerce.server.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -12,7 +11,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.apiecommerce.apiecomerce.client.entities.data.AuthenticationDTO;
 import com.apiecommerce.apiecomerce.server.exceptions.RestUserExceptionHandles;
-import com.apiecommerce.apiecomerce.server.exceptions.exceptionModels.UserNotFoundExceptionHandler;
 import com.apiecommerce.apiecomerce.server.services.CustomUserDetailsService;
 import com.apiecommerce.apiecomerce.server.services.TokenService;
 

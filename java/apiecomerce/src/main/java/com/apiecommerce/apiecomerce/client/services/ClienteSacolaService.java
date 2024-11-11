@@ -7,13 +7,10 @@ import org.springframework.stereotype.Service;
 
 import com.apiecommerce.apiecomerce.client.entities.ClienteProduto;
 import com.apiecommerce.apiecomerce.client.entities.SacolaCliente;
-import com.apiecommerce.apiecomerce.client.entities.data.AuthenticationDTO;
 import com.apiecommerce.apiecomerce.client.entities.data.ClienteSacolaDTO;
-import com.apiecommerce.apiecomerce.client.entities.data.SacolaDTO;
 import com.apiecommerce.apiecomerce.client.repositories.ClienteProdutoRepository;
 import com.apiecommerce.apiecomerce.client.repositories.ClienteSacolaRepository;
 import com.apiecommerce.apiecomerce.server.entities.EstadoDaCompra;
-import com.apiecommerce.apiecomerce.server.entities.Produto;
 import com.apiecommerce.apiecomerce.server.entities.SacolaServer;
 import com.apiecommerce.apiecomerce.server.entities.Usuario;
 import com.apiecommerce.apiecomerce.server.entities.data.LoginResponseDTO;

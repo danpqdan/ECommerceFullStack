@@ -1,6 +1,5 @@
 package com.apiecommerce.apiecomerce.client.services;
 
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -10,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.apiecommerce.apiecomerce.client.entities.ClienteProduto;
-import com.apiecommerce.apiecomerce.client.entities.data.AuthenticationDTO;
 import com.apiecommerce.apiecomerce.client.entities.data.ClienteSacolaDTO;
 import com.apiecommerce.apiecomerce.client.repositories.ClienteProdutoRepository;
 import com.apiecommerce.apiecomerce.client.repositories.ClienteSacolaRepository;
