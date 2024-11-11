@@ -11,7 +11,7 @@ services:
         sync: false
     region: oregon
     dockerContext: .
-    dockerfilePath: ./reactvite-app/dockerfile
+    dockerfilePath: /reactvite-app/dockerfile
   - type: web
     name: backend
     runtime: docker
@@ -20,5 +20,5 @@ services:
     plan: free
     region: oregon
     dockerContext: .
-    dockerfilePath: ./java/apiecomerce/dockerfile
+    dockerfilePath: /java/apiecomerce/dockerfile
 version: "1"
