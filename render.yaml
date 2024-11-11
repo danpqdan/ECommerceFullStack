@@ -1,7 +1,7 @@
 # Exported from Render on 2024-11-11T12:28:18Z
 services:
   - type: web
-    name: frontend
+    name: reactVite
     runtime: docker
     repo: https://github.com/danpqdan/ECommerceFullStack
     branch: reactVite
@@ -14,7 +14,7 @@ services:
     dockerfilePath: /reactvite-app/Dockerfile
     
   - type: web
-    name: backend
+    name: SpringIO
     runtime: docker
     repo: https://github.com/danpqdan/ECommerceFullStack
     branch: reactVite
