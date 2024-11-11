@@ -13,7 +13,7 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
 
     UserDetails findByUsername(String username);
 
-    @Query("SELECT u FROM Usuario u WHERE u.username = :username")
+    @Query(value = "SELECT * FROM usuarios u WHERE u.username = :username", nativeQuery = true)
     Usuario encontrarByUsername(@Param("username") String username);
 
     // Optional<Usuario> loadByUsername(String username);
