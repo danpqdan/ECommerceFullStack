@@ -9,8 +9,6 @@ services:
     envVars:
       - key: NODE_ENV
         value: production
-    ports:
-      - 8080
 
   - type: web
     name: backend
@@ -19,8 +17,3 @@ services:
     buildCommand: "./mvnw clean package"
     startCommand: "java -jar target/myapp.jar"
     dockerfilePath: ./java/apiecomerce
-    envVars:
-      - key: DATABASE_URL
-        value: postgres://user:password@host:port/dbname
-    ports:
-      - 3000
