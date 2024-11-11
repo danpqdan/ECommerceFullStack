@@ -1,17 +1,24 @@
+# Exported from Render on 2024-11-11T12:28:18Z
 services:
   - type: web
     name: frontend
-    env: docker
+    runtime: docker
+    repo: https://github.com/danpqdan/ECommerceFullStack
+    branch: reactVite
     plan: free
-    buildCommand: "npm install node styled-components && npm run build"
-    dockerfilePath: ./reactvite-app
     envVars:
       - key: NODE_ENV
-        value: production
-
+        sync: false
+    region: oregon
+    dockerContext: .
+    dockerfilePath: ./reactvite-app
   - type: web
     name: backend
-    env: docker
+    runtime: docker
+    repo: https://github.com/danpqdan/ECommerceFullStack
+    branch: reactVite
     plan: free
-    buildCommand: "./mvnw clean package"
+    region: oregon
+    dockerContext: .
     dockerfilePath: ./java/apiecomerce
+version: "1"
