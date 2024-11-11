@@ -143,9 +143,6 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 				<configuration>
-					<mainClass>
-						java.com.apiecommerce.apiecomerce.ApiecomerceApplication
-					</mainClass>
 					<excludes>
 						<exclude>
 							<groupId>org.projectlombok</groupId>
