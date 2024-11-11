@@ -59,7 +59,7 @@ public class ProdutoController {
 
     }
 
-    @PostMapping("/produtos")
+    @PostMapping("/produtos/adicionar")
     public ResponseEntity<List<ServerProduto>> adicionarProdutoSemImagem(@RequestBody List<ServerProduto> produto) {
         var result = produtoService.saveProdutoSemImagem(produto);
         return ResponseEntity.ok().body(result);

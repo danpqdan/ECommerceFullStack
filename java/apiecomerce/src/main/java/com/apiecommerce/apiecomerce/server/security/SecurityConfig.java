@@ -50,16 +50,17 @@ public class SecurityConfig {
 
                         .requestMatchers("/api/admin").hasRole("ADMIN")
 
-                        .requestMatchers(HttpMethod.GET, "/api/produtos").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/produtos").hasRole("ADMIN")
+                        .requestMatchers("/api/produtos").permitAll()
+                        .requestMatchers("/api/produtos/adicionar").hasRole("ADMIN")
 
-                        .requestMatchers(HttpMethod.GET, "/api/categoria").permitAll()
+                        .requestMatchers("/api/categoria").permitAll()
+                        .requestMatchers("/api/categoria/adicionar").hasRole("ADMIN")
 
                         .requestMatchers("/api/sacola/**").permitAll()
 
                         .requestMatchers(HttpMethod.POST, "api/mercadopago").permitAll()
 
-                        .requestMatchers("swagger-ui/**", "/v3/api-docs/**", "/doc").permitAll()
+                        .requestMatchers("swagger-ui/**", "/v3/api-docs/**", "/doc", "/").permitAll()
                         .anyRequest().authenticated())
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
