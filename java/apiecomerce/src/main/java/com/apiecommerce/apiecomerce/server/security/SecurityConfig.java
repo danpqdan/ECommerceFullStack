@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -33,20 +34,26 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         return httpSecurity
                 .csrf(csrf -> csrf.disable())
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .cors(cors -> cors.configurationSource(request -> {
                     var corsConfiguration = new CorsConfiguration();
                     corsConfiguration.addAllowedOriginPattern(secretProd);
                     corsConfiguration.addAllowedOriginPattern(secretDev);
                     corsConfiguration.addAllowedHeader("*");
                     corsConfiguration.addAllowedMethod("*");
-                    corsConfiguration.addAllowedHeader("*");
                     corsConfiguration.setAllowCredentials(true);
 
                     return corsConfiguration;
                 }))
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/auth/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/auth/register").permitAll()
+
+                        .requestMatchers("/home").permitAll()
+                        .requestMatchers("/static/**").permitAll() // Permite acesso a arquivos estáticos
+                        .requestMatchers("/css/**").permitAll() // Permite CSS
+                        .requestMatchers("/js/**").permitAll() // Permite JavaScript
 
                         .requestMatchers("/api/admin").hasRole("ADMIN")
 
@@ -60,7 +67,7 @@ public class SecurityConfig {
 
                         .requestMatchers(HttpMethod.POST, "api/mercadopago").permitAll()
 
-                        .requestMatchers("swagger-ui/**", "/v3/api-docs/**", "/doc", "/").permitAll()
+                        .requestMatchers("swagger-ui/**", "/v3/api-docs/**", "/doc").permitAll()
                         .anyRequest().authenticated())
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();

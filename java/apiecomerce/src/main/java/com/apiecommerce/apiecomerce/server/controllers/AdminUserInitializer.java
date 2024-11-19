@@ -10,8 +10,6 @@ import com.apiecommerce.apiecomerce.client.entities.data.AuthenticationDTO;
 import com.apiecommerce.apiecomerce.server.interfaces.UsuarioRepository;
 import com.apiecommerce.apiecomerce.server.services.CustomUserDetailsService;
 
-import jakarta.annotation.PostConstruct;
-
 @Configuration
 public class AdminUserInitializer implements CommandLineRunner {
 
@@ -36,7 +34,7 @@ public class AdminUserInitializer implements CommandLineRunner {
     @Transactional
     public void run(String... args) throws Exception {
         if (userRepository.encontrarByUsername(adminUsername) == null) {
-            userDetailsService.novoUsuario(new AuthenticationDTO(adminUsername, adminUsername));
+            userDetailsService.novoUsuario(new AuthenticationDTO(adminUsername, adminPassword));
             userDetailsService.transformAdminRole(new AuthenticationDTO(adminUsername, adminPassword));
             System.out.println("Usuário administrador criado com sucesso!");
         } else {

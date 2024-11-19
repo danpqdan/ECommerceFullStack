@@ -1,9 +1,15 @@
+import { ResponsiveBox } from "..";
+import { Login } from "../components/Login"
+import { useWindowSize } from "../hooks/useWindowsSize";
 
 const LoginForm = () => {
+    const { width = 0, height = 0 } = useWindowSize();
+
     return (
-        <div>
-            <h1>login form</h1>
-        </div>
+        <ResponsiveBox width={width} height={height}>
+            <Login />
+
+        </ResponsiveBox>
     );
 }
 

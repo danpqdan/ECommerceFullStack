@@ -3,34 +3,32 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useWindowSize, WindowSize } from '../hooks/useWindowsSize';
 import { ListNavBar, ListNavBarToggle, NavbarWrapper, NavItem, Overlay, ToggleIcon } from '../styles/navbar.styled.components'; // Importação correta
 import { useScrollDirection } from '../hooks/useScrollDirection';
+import { useIsLogado } from '../hooks/useLogin';
 
 const Navbar: React.FC<WindowSize> = () => {
     const { width = 0, height = 0 } = useWindowSize();
-
-    const [isAuthenticated, setIsAuthenticated] = useState(false);
     // const [showModal, setShowModal] = useState(false);
     const [user, setUsername] = useState<string | null>();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
-    const isToggleIconVisible = useScrollDirection(); // Controle de visibilidade do ícone
+    const isToggleIconVisible = useScrollDirection();
+    const isLogado = useIsLogado();
+
 
 
     const navigate = useNavigate();
 
     useEffect(() => {
-        const token = localStorage.getItem('token');
-        // const role = localStorage.getItem('role');
         const user = localStorage.getItem('user');
         setUsername(user);
-        setIsAuthenticated(!!token);
     }, []);
 
     const logoutUser = () => {
         localStorage.removeItem('token');
         localStorage.removeItem('role');
 
-        setIsAuthenticated(false);
         // setShowModal(true);
         navigate('/login', { state: { message: 'logout realizado com sucesso!' } })
+        window.location.reload()
     };
 
     const isMobile = width < 768;
@@ -61,7 +59,7 @@ const Navbar: React.FC<WindowSize> = () => {
                                 <NavItem className='main-button' onClick={() => toggleItem()}>
                                     <Link to="/carrinho" style={{ display: 'block', width: '100%', height: '100%', textDecoration: 'none' }}>Carrinho</Link>
                                 </NavItem>
-                                {!isAuthenticated ? (
+                                {!isLogado ? (
                                     <NavItem className='main-button'>
                                         <Link to="/login" style={{ display: 'block', width: '100%', height: '100%', textDecoration: 'none' }}>Login</Link>
                                     </NavItem>
@@ -85,14 +83,15 @@ const Navbar: React.FC<WindowSize> = () => {
                         <NavItem className='main-button'>
                             <Link to="/carrinho">Carrinho</Link>
                         </NavItem>
-                        {!isAuthenticated ? (
+                        {!isLogado ? (
                             <NavItem className='main-button'>
                                 <Link to="/login">Login</Link>
                             </NavItem>
                         ) : (
                             <>
-                                <p>Bem-vindo! Você já está logado {user}.</p>
+                                <p>Bem-vindo! Você já está logado</p>
                                 <button onClick={logoutUser}>Sair</button>
+
                             </>
                         )}
                     </ListNavBar>

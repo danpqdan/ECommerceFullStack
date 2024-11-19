@@ -15,8 +15,13 @@ import { PageProdutos } from "./pages/PageProdutos";
 // import { useEffect, useState } from 'react';
 
 import { ResponsiveBox } from ".";
+import { Register } from "./components/Register";
 import { useWindowSize } from "./hooks/useWindowsSize";
+import { ErrorLayout } from "./layouts/ErrorLayout";
 import Home from "./pages/Home";
+import Painel from "./pages/Painel";
+import { ProdutoCard } from "./layouts/ProdutoCard";
+
 
 function App() {
   const { width = 0, height = 0 } = useWindowSize();
@@ -36,10 +41,13 @@ function App() {
           <Route path="/produtos" element={<PageProdutos />} />
           <Route path="/carrinho" element={<Carrinho />} />
           <Route path="/login" element={<LoginForm />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/painel" element={<Painel />} />
+          <Route path="/notFound" element={<ErrorLayout message="NotFound" />} />
+          <Route path="/produto/:id" element={<ProdutoCard />} />
           {/* 
           <Route path="/register" element={<RegisterForm />} />
           <Route path='/paineladmin' element={<PainelAdmin />} />
-          <Route path="/produto/:id" element={<ProdutoCard />} />
           <Route path="/produto-preview" element={<ProdutoCard />} /> */}
 
         </Routes>
