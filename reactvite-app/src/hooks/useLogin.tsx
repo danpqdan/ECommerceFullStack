@@ -7,7 +7,6 @@ export const useLogin = () => {
     const [error, setError] = useState<string | null>(null);
     const [loading, setLoading] = useState<boolean>(false);
     const [logado, setLogado] = useState<boolean>(false);
-    const isAdmin = useIsAdmin();
     const navigate = useNavigate();
 
     const login = async (username: string, password: string) => {
@@ -32,18 +31,8 @@ export const useLogin = () => {
                 if (data.token) {
                     localStorage.setItem('token', data.token);
                 }
-                if (isAdmin) {
-                    const response = await fetch('http://localhost:8080/painel', {
-                        method: 'GET',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({ username, password }),
-                    });
-                    const data = await response.json();
-                    setError("admin")
-                    
-                }
+
+
 
                 navigate('/')
                 window.location.reload();

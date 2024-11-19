@@ -6,7 +6,7 @@ import { LoginButton, LoginContainer, LoginDivButton, LoginDivWapper, LoginInput
 
 export const Login = () => {
     const { width = 0, height = 0 } = useWindowSize();
-    const { login, status, userRole, error, loading, logado } = useLogin();
+    const { login, error } = useLogin();
     const [username, setUsername] = useState<string>('');
     const [password, setPassword] = useState<string>('');
 

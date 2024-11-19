@@ -1,4 +1,3 @@
-import React from 'react';
 import { useIsAdmin } from '../hooks/useLogin';
 import { PainelAdmin } from './PainelAdmin';
 const Painel = () => {
