@@ -27,7 +27,7 @@ export const fetchProdutosComCache = async () => {
     }
 
     try {
-        const response = await fetch('http://localhost:8080/api/produtos');
+        const response = await fetch('https://backend-g8j8.onrender.com/api/produtos');
         if (!response.ok) {
             throw new Error(`Erro HTTP! status: ${response.status}`);
         }

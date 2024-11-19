@@ -12,7 +12,7 @@ export const useLogin = () => {
     const login = async (username: string, password: string) => {
         setLoading(true);
         try {
-            const response = await fetch('http://localhost:8080/auth/login', {
+            const response = await fetch('https://backend-g8j8.onrender.com/auth/login', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
